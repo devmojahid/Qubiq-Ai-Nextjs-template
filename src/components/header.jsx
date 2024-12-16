@@ -10,32 +10,10 @@ import { MegaMenu } from "./header/mega-menu"
 import { CommandMenu } from "./command-menu"
 
 const navigation = [
-  { 
-    name: "Landing", 
-    href: "/", 
-    hasMega: true, 
-    category: "landing",
-    // isNew: true
-  },
-  { 
-    name: "User App", 
-    href: "/app", 
-    hasMega: true, 
-    category: "apps",
-    // isBeta: true
-  },
-  { 
-    name: "Admin", 
-    href: "/admin", 
-    hasMega: true, 
-    category: "admin"
-  },
-  { 
-    name: "Pages", 
-    href: "/pages", 
-    hasMega: true, 
-    category: "pages"
-  }
+  { name: "Landing", href: "/", hasMega: true, category: "landing" },
+  { name: "User App", href: "/app", hasMega: true, category: "apps" },
+  { name: "Admin", href: "/admin", hasMega: true, category: "admin" },
+  { name: "Pages", href: "/pages", hasMega: false, category: "pages" }
 ]
 
 export function Header() {
@@ -63,110 +41,125 @@ export function Header() {
 
   return (
     <>
-      <header 
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled 
-            ? "bg-background/95 backdrop-blur-xl border-b border-border/40" 
-            : "bg-background/50 backdrop-blur-sm"
-        }`}
+      <motion.header 
+        initial={false}
+        animate={{
+          backgroundColor: isScrolled ? "hsl(var(--background)/95%)" : "hsl(var(--background)/50%)",
+          borderColor: isScrolled ? "hsl(var(--border)/40%)" : "transparent",
+        }}
+        className="fixed top-0 left-0 right-0 z-50 border-b backdrop-blur-xl transition-[backdrop-filter] duration-300"
       >
-        <div className="container">
+        <div className="container mx-auto px-4">
           <nav className="flex h-16 items-center justify-between">
             {/* Left Section */}
             <div className="flex items-center gap-6">
               <Logo onMouseEnter={() => handleMenuHover(null)} />
               
               {/* Enhanced Search Command */}
-              <div className="hidden lg:block relative group">
-                <button
+              <div className="hidden lg:block">
+                <motion.button
                   onClick={() => setIsCommandOpen(true)}
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg bg-secondary/20 group-hover:bg-secondary/40 transition-all duration-300"
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                  className="group flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground/90 rounded-full border border-border/40 bg-secondary/30 hover:bg-secondary/50 hover:border-border/60 hover:text-foreground transition-all duration-200"
                 >
-                  <Search className="w-4 h-4 transition-transform group-hover:scale-110 duration-300" />
-                  <span className="transition-colors">Quick search...</span>
-                  <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-muted/50 text-xs ml-2">
-                    <Command className="w-3 h-3" />
-                    <span>K</span>
+                  <Search className="w-4 h-4 text-muted-foreground/70 group-hover:text-foreground/70 transition-colors duration-200" />
+                  <span className="transition-colors duration-200">Quick search...</span>
+                  <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-muted/60 border border-border/40">
+                    <span className="text-[10px] font-medium opacity-70">⌘</span>
+                    <span className="text-[10px] font-medium opacity-70">K</span>
                   </div>
-                </button>
-                <div className="absolute inset-x-0 h-px -bottom-px bg-gradient-to-r from-primary/0 via-primary/20 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                </motion.button>
               </div>
             </div>
 
             {/* Center Navigation */}
             <div className="hidden lg:flex items-center">
-              {navigation.map((item) => (
-                <div
-                  key={item.href}
-                  onMouseEnter={() => handleMenuHover(item.hasMega ? item.category : null)}
-                  onMouseLeave={() => handleMenuHover(null)}
-                  className="relative px-1"
-                >
-                  <Link
-                    href={item.href}
-                    className={`group relative flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all duration-300 rounded-lg ${
-                      hoveredItem === item.category
-                        ? "text-primary bg-primary/5 scale-[1.02] shadow-sm"
-                        : "text-muted-foreground hover:text-foreground hover:bg-secondary/30"
-                    }`}
+              <motion.div className="flex items-center gap-1" layout>
+                {navigation.map((item) => (
+                  <motion.div
+                    key={item.href}
+                    onMouseEnter={() => handleMenuHover(item.hasMega ? item.category : null)}
+                    onMouseLeave={() => handleMenuHover(null)}
+                    className="relative px-1"
+                    layout
                   >
-                    <span className="relative">
-                      {item.name}
-                      <span className="absolute inset-x-0 -bottom-px h-px bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
-                    </span>
-                    {item.hasMega && (
+                    <Link href={item.href}>
                       <motion.div
-                        animate={{ 
-                          rotate: hoveredItem === item.category ? 180 : 0,
-                          scale: hoveredItem === item.category ? 1.1 : 1
-                        }}
-                        transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                        className="text-muted-foreground group-hover:text-foreground transition-colors"
+                        className={`group relative flex items-center gap-2 px-3.5 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
+                          hoveredItem === item.category
+                            ? "text-foreground"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                       >
-                        <ChevronDown className="w-4 h-4" />
+                        <span className="relative z-10">
+                          {item.name}
+                          {hoveredItem === item.category && (
+                            <motion.div
+                              layoutId="navHighlight"
+                              className="absolute inset-0 -z-10 rounded-lg bg-secondary/60"
+                              transition={{ 
+                                type: "spring", 
+                                bounce: 0.15, 
+                                duration: 0.5 
+                              }}
+                            />
+                          )}
+                        </span>
+                        {item.hasMega && (
+                          <motion.div
+                            animate={{ 
+                              rotate: hoveredItem === item.category ? 180 : 0,
+                              scale: hoveredItem === item.category ? 1.1 : 1
+                            }}
+                            transition={{ type: "spring", bounce: 0.3 }}
+                          >
+                            <ChevronDown className="w-4 h-4 text-muted-foreground/70 group-hover:text-foreground/70 transition-colors" />
+                          </motion.div>
+                        )}
                       </motion.div>
-                    )}
-                  </Link>
-                </div>
-              ))}
+                    </Link>
+                  </motion.div>
+                ))}
+              </motion.div>
             </div>
 
             {/* Right Section */}
             <div className="flex items-center gap-4">
-              {/* Enhanced Theme Toggle */}
-              <div className="relative group">
-                <ThemeToggle />
-                <div className="absolute inset-0 -z-10 rounded-lg bg-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </div>
+              <ThemeToggle />
               
               {/* Auth Buttons */}
               <div className="hidden lg:flex items-center gap-3">
                 <Link href="/sign-in">
                   <motion.button
-                    className="relative px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground rounded-lg group overflow-hidden"
+                    className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground rounded-lg hover:bg-secondary/40 transition-all duration-200"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <span className="relative z-10">Sign In</span>
-                    <div className="absolute inset-0 bg-secondary/30 translate-y-[101%] group-hover:translate-y-0 transition-transform duration-300" />
+                    Sign In
                   </motion.button>
                 </Link>
                 <Link href="/get-started">
                   <motion.button 
-                    className="relative px-4 py-2 text-sm font-medium text-primary-foreground rounded-lg overflow-hidden bg-primary"
+                    className="relative px-5 py-2.5 text-sm font-medium text-white rounded-full bg-primary hover:opacity-90 transition-all duration-200 overflow-hidden"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
                     <span className="relative z-10">Get Started</span>
                     <motion.div 
                       className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
-                      initial={{ x: '-100%' }}
-                      animate={{ x: '100%' }}
-                      transition={{ 
-                        duration: 1.5, 
-                        repeat: Infinity, 
-                        ease: "linear",
-                        repeatDelay: 0.5
+                      initial={{ x: '-100%', opacity: 0 }}
+                      animate={{ 
+                        x: '100%', 
+                        opacity: [0, 1, 1, 0],
+                        transition: {
+                          duration: 1.5,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                          times: [0, 0.2, 0.8, 1]
+                        }
                       }}
                     />
                   </motion.button>
@@ -175,7 +168,7 @@ export function Header() {
 
               {/* Mobile Menu Button */}
               <motion.button
-                className="lg:hidden p-2 hover:bg-secondary/40 rounded-lg transition-colors"
+                className="lg:hidden relative p-2.5 rounded-lg hover:bg-secondary/40 transition-colors duration-200"
                 onClick={() => setIsOpen(!isOpen)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -187,7 +180,7 @@ export function Header() {
                       initial={{ rotate: -90, opacity: 0 }}
                       animate={{ rotate: 0, opacity: 1 }}
                       exit={{ rotate: 90, opacity: 0 }}
-                      transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                      transition={{ type: "spring", bounce: 0.3 }}
                     >
                       <X className="h-5 w-5" />
                     </motion.div>
@@ -197,7 +190,7 @@ export function Header() {
                       initial={{ rotate: 90, opacity: 0 }}
                       animate={{ rotate: 0, opacity: 1 }}
                       exit={{ rotate: -90, opacity: 0 }}
-                      transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                      transition={{ type: "spring", bounce: 0.3 }}
                     >
                       <Menu className="h-5 w-5" />
                     </motion.div>
@@ -236,9 +229,9 @@ export function Header() {
                 >
                   <Search className="w-4 h-4" />
                   <span>Search...</span>
-                  <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-muted text-xs ml-auto">
-                    <Command className="w-3 h-3" />K
-                  </div>
+                  <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium">
+                    <span className="text-xs">⌘</span>K
+                  </kbd>
                 </button>
 
                 {/* Mobile Navigation */}
@@ -247,20 +240,10 @@ export function Header() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="flex items-center justify-between p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary/40"
+                      className="flex items-center justify-between p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary/40 transition-all"
                       onClick={() => setIsOpen(false)}
                     >
-                      <span className="flex items-center gap-2">
-                        {item.name}
-                        {item.isNew && (
-                          <span className="flex h-2 w-2">
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                          </span>
-                        )}
-                        {item.isBeta && (
-                          <span className="text-[10px] font-medium text-primary">Beta</span>
-                        )}
-                      </span>
+                      <span>{item.name}</span>
                       {item.hasMega && <ChevronDown className="h-4 w-4 opacity-50" />}
                     </Link>
                   ))}
@@ -274,7 +257,7 @@ export function Header() {
                     </button>
                   </Link>
                   <Link href="/get-started" className="block">
-                    <button className="w-full p-2 text-sm font-medium text-primary-foreground rounded-lg bg-primary hover:bg-primary/90 transition-colors">
+                    <button className="w-full p-2 text-sm font-medium text-white rounded-lg bg-primary hover:opacity-90 transition-colors">
                       Get Started
                     </button>
                   </Link>
@@ -283,7 +266,7 @@ export function Header() {
             </motion.div>
           )}
         </AnimatePresence>
-      </header>
+      </motion.header>
 
       <CommandMenu 
         isOpen={isCommandOpen}

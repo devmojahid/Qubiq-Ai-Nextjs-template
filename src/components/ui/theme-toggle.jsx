@@ -1,26 +1,26 @@
 "use client"
 
+import { Moon, Sun, Monitor } from "lucide-react"
 import { useTheme } from "next-themes"
 import { motion, AnimatePresence } from "framer-motion"
-import { Sun, Moon, Monitor } from "lucide-react"
 
 const themes = [
-  { 
-    name: "light", 
+  {
+    name: "light",
     icon: Sun,
-    gradient: "from-yellow-400 via-orange-400 to-red-400",
+    gradient: "from-yellow-400/80 via-orange-400/80 to-red-400/80",
     label: "Light Mode"
   },
-  { 
-    name: "dark", 
+  {
+    name: "dark",
     icon: Moon,
-    gradient: "from-indigo-500 via-purple-500 to-pink-500",
+    gradient: "from-indigo-400/80 via-purple-400/80 to-pink-400/80",
     label: "Dark Mode"
   },
-  { 
-    name: "system", 
+  {
+    name: "system",
     icon: Monitor,
-    gradient: "from-green-400 via-emerald-400 to-teal-400",
+    gradient: "from-primary/60 via-primary/40 to-primary/20",
     label: "System Theme"
   }
 ]
@@ -30,7 +30,7 @@ export function ThemeToggle() {
 
   return (
     <motion.div 
-      className="flex items-center gap-1 p-1.5 rounded-xl bg-gradient-to-br from-muted/50 to-muted border border-border"
+      className="flex items-center gap-0.5 p-1 rounded-full bg-secondary/50 border border-border/40"
       initial={false}
       animate={{ scale: 1 }}
       whileHover={{ scale: 1.02 }}
@@ -39,23 +39,33 @@ export function ThemeToggle() {
         <motion.button
           key={name}
           onClick={() => setTheme(name)}
-          className="relative p-2 rounded-lg"
+          className="relative p-2 rounded-full"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
           title={label}
         >
           <Icon className={`h-4 w-4 relative z-10 transition-colors duration-200 ${
-            theme === name ? "text-white" : "text-muted-foreground"
+            theme === name 
+              ? "text-white" 
+              : "text-muted-foreground/70 hover:text-foreground/90"
           }`} />
-          <AnimatePresence>
+          
+          <AnimatePresence mode="wait">
             {theme === name && (
               <motion.div
                 layoutId="theme-active"
-                className={`absolute inset-0 bg-gradient-to-r ${gradient} rounded-lg`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
+                className={`absolute inset-0 bg-gradient-to-r ${gradient} rounded-full opacity-90 backdrop-blur-sm`}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ 
+                  opacity: 1,
+                  scale: 1,
+                  transition: { duration: 0.2 }
+                }}
+                exit={{ 
+                  opacity: 0,
+                  scale: 0.8,
+                  transition: { duration: 0.15 }
+                }}
               />
             )}
           </AnimatePresence>
@@ -63,4 +73,4 @@ export function ThemeToggle() {
       ))}
     </motion.div>
   )
-} 
+}

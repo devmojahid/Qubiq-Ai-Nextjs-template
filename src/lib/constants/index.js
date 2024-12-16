@@ -16,7 +16,7 @@ export const menuItems = {
           name: "Text Generator", 
           href: "/apps/text", 
           description: "Create engaging content with AI",
-          icon: "Type"
+          icon: "FileText"
         },
         { 
           name: "Image Generator", 
