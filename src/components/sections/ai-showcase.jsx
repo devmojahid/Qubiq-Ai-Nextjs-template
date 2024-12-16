@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import { useRef, useState, useEffect } from "react"
 import { 
   Sparkles, Code2, Image as ImageIcon, 
-  MessageSquare, Wand2, Play, Pause, Check, Copy, RefreshCw, Download 
+  MessageSquare, Wand2, Play, Pause, Check, Copy, RefreshCw, Download, User 
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -440,6 +440,8 @@ function DemoCard({ item, isActive, onClick }) {
   const [isGenerating, setIsGenerating] = useState(false)
   const [generationStep, setGenerationStep] = useState(0)
   const [imageProgress, setImageProgress] = useState(0)
+  const [messages, setMessages] = useState([])
+  const chatRef = useRef(null)
   
   const steps = [
     { label: "Analyzing prompt...", duration: 1000 },
@@ -548,20 +550,256 @@ function DemoCard({ item, isActive, onClick }) {
     }
   }
 
-  // Update the renderOutput function to handle different types
-  const renderOutput = () => {
-    if (item.demo.type === "image") {
-      return (
-        <AnimatedImage
-          image={item.demo.output}
-          variations={item.demo.variations}
-          isPlaying={isPlaying}
-          isGenerating={isGenerating}
-          progress={imageProgress}
-        />
-      )
+  // Add chat generation handler
+  const handleChatGeneration = async () => {
+    if (isGenerating) return
+    
+    setIsGenerating(true)
+    setIsPlaying(true)
+
+    try {
+      // Simulate chat generation progress
+      const duration = 5000 // 5 seconds
+      const interval = 50 // Update every 50ms
+      const steps = duration / interval
+      let progress = 0
+
+      const progressInterval = setInterval(() => {
+        progress += (100 / steps)
+        setImageProgress(Math.min(progress, 100))
+      }, interval)
+
+      await new Promise(resolve => setTimeout(resolve, duration))
+      clearInterval(progressInterval)
+    } catch (error) {
+      console.error('Chat generation failed:', error)
+    } finally {
+      setIsGenerating(false)
+      setImageProgress(100)
     }
-    // ... existing code/chat rendering logic ...
+  }
+
+  // Update renderOutput to handle different types independently
+  const renderOutput = () => {
+    switch (item.demo.type) {
+      case "code":
+        // Keep existing Code Generation as is
+        return (
+          <div className="space-y-3">
+            {/* Existing Code Generation UI */}
+            <AnimatedCode
+              code={item.demo.output}
+              isPlaying={isPlaying}
+              language={item.demo.language}
+            />
+            <div className="flex flex-col sm:flex-row gap-2">
+              <motion.button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handlePlayPause()
+                }}
+                className={cn(
+                  "flex items-center justify-center gap-2",
+                  "px-3 py-1.5 rounded-lg",
+                  "bg-primary/90 text-primary-foreground",
+                  "text-xs font-medium"
+                )}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {isPlaying ? (
+                  <>
+                    <Pause className="w-3.5 h-3.5" />
+                    <span>Pause</span>
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-3.5 h-3.5" />
+                    <span>Generate Code</span>
+                  </>
+                )}
+              </motion.button>
+              {/* Copy button */}
+            </div>
+          </div>
+        )
+
+      case "image":
+        return (
+          <div className="space-y-3">
+            {/* Image Generation UI */}
+            <div className="relative rounded-lg overflow-hidden border border-border/50">
+              <div className="flex items-center justify-between px-3 py-1.5 bg-secondary/30 border-b border-border/50">
+                <div className="flex items-center gap-2">
+                  <ImageIcon className="w-4 h-4 text-primary" />
+                  <span className="text-xs font-medium">Image Generation</span>
+                </div>
+                {item.demo.variations?.length > 0 && (
+                  <span className="text-xs text-muted-foreground">
+                    Style {currentVariation + 1}/{item.demo.variations.length}
+                  </span>
+                )}
+              </div>
+
+              <div className="relative aspect-video">
+                {isGenerating ? (
+                  <div className="absolute inset-0 flex items-center justify-center bg-secondary/30">
+                    <div className="space-y-4 text-center">
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                      >
+                        <Sparkles className="w-8 h-8 text-primary" />
+                      </motion.div>
+                      <div className="space-y-2">
+                        <p className="text-sm font-medium">Generating Image...</p>
+                        <div className="w-48 h-1 bg-secondary rounded-full overflow-hidden">
+                          <motion.div
+                            className="h-full bg-primary"
+                            style={{ width: `${imageProgress}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <Image
+                    src={item.demo.variations?.[currentVariation] || item.demo.output}
+                    alt="Generated Image"
+                    fill
+                    className="object-cover"
+                  />
+                )}
+              </div>
+            </div>
+
+            {/* Image Controls */}
+            <div className="flex flex-wrap gap-2">
+              <motion.button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleImageGeneration()
+                }}
+                className={cn(
+                  "flex items-center gap-2 px-3 py-1.5 rounded-lg",
+                  "bg-primary/90 text-primary-foreground text-xs font-medium"
+                )}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                disabled={isGenerating}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Generate Image</span>
+              </motion.button>
+
+              {item.demo.variations?.length > 0 && (
+                <motion.button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleNextVariation(e)
+                  }}
+                  className={cn(
+                    "flex items-center gap-2 px-3 py-1.5 rounded-lg",
+                    "bg-secondary text-foreground text-xs font-medium"
+                  )}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Try Different Style</span>
+                </motion.button>
+              )}
+
+              <motion.button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  // Add download functionality
+                }}
+                className={cn(
+                  "flex items-center gap-2 px-3 py-1.5 rounded-lg",
+                  "bg-secondary text-foreground text-xs font-medium"
+                )}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Download</span>
+              </motion.button>
+            </div>
+          </div>
+        )
+
+      case "chat":
+        return (
+          <div className="space-y-3">
+            {/* Chat Interface */}
+            <div className="rounded-lg border border-border/50 overflow-hidden">
+              <div className="flex items-center px-3 py-1.5 bg-secondary/30 border-b border-border/50">
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="w-4 h-4 text-primary" />
+                  <span className="text-xs font-medium">AI Chat</span>
+                </div>
+              </div>
+
+              <div className="p-3 space-y-3 max-h-[300px] overflow-y-auto">
+                {messages.map((msg, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, x: msg.role === "user" ? 20 : -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className={cn(
+                      "flex items-start gap-2 max-w-[80%] p-2 rounded-lg",
+                      msg.role === "user" 
+                        ? "ml-auto bg-primary/10" 
+                        : "bg-secondary/30"
+                    )}
+                  >
+                    {msg.role === "assistant" ? (
+                      <Sparkles className="w-4 h-4 mt-1 text-primary" />
+                    ) : (
+                      <User className="w-4 h-4 mt-1" />
+                    )}
+                    <p className="text-sm">{msg.content}</p>
+                  </motion.div>
+                ))}
+
+                {isGenerating && (
+                  <div className="flex items-center gap-2 text-primary">
+                    <motion.div
+                      animate={{ opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    >
+                      <Sparkles className="w-4 h-4" />
+                    </motion.div>
+                    <span className="text-xs">AI is thinking...</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Chat Controls */}
+            <motion.button
+              onClick={(e) => {
+                e.stopPropagation()
+                handleChatGeneration()
+              }}
+              className={cn(
+                "flex items-center gap-2 px-3 py-1.5 rounded-lg",
+                "bg-primary/90 text-primary-foreground text-xs font-medium"
+              )}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              disabled={isGenerating}
+            >
+              <MessageSquare className="w-3.5 h-3.5" />
+              <span>Continue Chat</span>
+            </motion.button>
+          </div>
+        )
+
+      default:
+        return null
+    }
   }
 
   return (

@@ -10,10 +10,11 @@ import { MegaMenu } from "./header/mega-menu"
 import { CommandMenu } from "./command-menu"
 
 const navigation = [
-  { name: "Landing", href: "/", hasMega: true, category: "landing" },
-  { name: "User App", href: "/app", hasMega: true, category: "apps" },
-  { name: "Admin", href: "/admin", hasMega: true, category: "admin" },
-  { name: "Pages", href: "/pages", hasMega: false, category: "pages" }
+  { name: "Home", href: "/", hasMega: false, category: "home" },
+  { name: "Dashboard", href: "/dashboard", hasMega: true, category: "dashboard" },
+  { name: "Pages", href: "/pages", hasMega: true, category: "pages" },
+  { name: "Contact", href: "/contact", hasMega: false, category: "contact" },
+
 ]
 
 export function Header() {
