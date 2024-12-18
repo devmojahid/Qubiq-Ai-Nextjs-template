@@ -96,7 +96,12 @@ export function DashboardHeader({ isSidebarOpen, onSidebarToggle, isMobile }) {
   }, [])
 
   return (
-    <header className="sticky top-0 z-20 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className={cn(
+      "sticky top-0 z-20 w-full border-b",
+      "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+      "transition-all duration-300",
+      isSidebarOpen ? "lg:pl-72" : "lg:pl-20"
+    )}>
       <div className="flex h-16 items-center gap-4 px-4">
         {/* Mobile Menu Button */}
         {isMobile && (
@@ -114,23 +119,45 @@ export function DashboardHeader({ isSidebarOpen, onSidebarToggle, isMobile }) {
           </motion.button>
         )}
 
-        {/* Quick Actions */}
+        {/* Quick Actions with enhanced styling */}
         <div className="flex items-center gap-2">
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-primary/90 px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 transition-all shadow-sm"
+            className={cn(
+              "inline-flex items-center gap-2 rounded-xl",
+              "bg-gradient-to-r from-primary to-primary/90",
+              "px-4 py-2 text-sm font-medium text-primary-foreground",
+              "hover:opacity-90 transition-all shadow-sm",
+              "hover:shadow-primary/20",
+              !isSidebarOpen && "lg:w-10 lg:p-2 lg:justify-center"
+            )}
           >
             <Sparkles className="h-4 w-4" />
-            <span className="hidden sm:inline">New Project</span>
+            <span className={cn(
+              "hidden sm:inline",
+              !isSidebarOpen && "lg:hidden"
+            )}>
+              New Project
+            </span>
           </motion.button>
         </div>
 
-        {/* Search */}
-        <div ref={searchRef} className="relative flex-1 max-w-md">
+        {/* Search with adaptive width */}
+        <div ref={searchRef} className={cn(
+          "relative flex-1 transition-all duration-300",
+          isSidebarOpen ? "max-w-md" : "max-w-xl"
+        )}>
           <button
             onClick={() => setIsSearchOpen(true)}
-            className="flex w-full items-center gap-2 rounded-xl border border-border/50 px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-all group hover:border-primary/50 hover:bg-accent/50"
+            className={cn(
+              "flex w-full items-center gap-2 rounded-xl",
+              "border border-border/50 px-4 py-2",
+              "text-sm text-muted-foreground",
+              "hover:text-foreground transition-all group",
+              "hover:border-primary/50 hover:bg-accent/50",
+              !isSidebarOpen && "lg:max-w-xl"
+            )}
           >
             <Search className="h-4 w-4 group-hover:text-primary transition-colors" />
             <span className="hidden sm:inline flex-1 text-left">Search anything...</span>
@@ -140,17 +167,22 @@ export function DashboardHeader({ isSidebarOpen, onSidebarToggle, isMobile }) {
           </button>
         </div>
 
-        {/* Right Section */}
-        <div className="flex items-center gap-3">
+        {/* Right section with enhanced spacing */}
+        <div className="flex items-center gap-4">
           <ThemeToggle />
           
-          {/* Notifications */}
+          {/* Notifications with better hover effects */}
           <div ref={notificationsRef} className="relative">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowNotifications(!showNotifications)}
-              className="relative rounded-xl p-2 hover:bg-accent/80 transition-all"
+              className={cn(
+                "relative rounded-xl p-2 transition-all",
+                "hover:bg-primary/10 dark:hover:bg-primary/20",
+                "focus-visible:outline-none focus-visible:ring-2",
+                "focus-visible:ring-primary/50"
+              )}
             >
               <Bell className="h-5 w-5" />
               <span className="absolute right-1.5 top-1.5 flex h-2 w-2">
@@ -185,11 +217,16 @@ export function DashboardHeader({ isSidebarOpen, onSidebarToggle, isMobile }) {
             </AnimatePresence>
           </div>
 
-          {/* Messages */}
+          {/* Messages with consistent styling */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="rounded-xl p-2 hover:bg-accent/80 transition-all relative"
+            className={cn(
+              "rounded-xl p-2 transition-all relative",
+              "hover:bg-primary/10 dark:hover:bg-primary/20",
+              "focus-visible:outline-none focus-visible:ring-2",
+              "focus-visible:ring-primary/50"
+            )}
           >
             <MessageSquare className="h-5 w-5" />
             <span className="absolute right-1.5 top-1.5 flex h-2 w-2">
@@ -197,13 +234,18 @@ export function DashboardHeader({ isSidebarOpen, onSidebarToggle, isMobile }) {
             </span>
           </motion.button>
 
-          {/* User Menu */}
+          {/* User Menu with enhanced profile section */}
           <div ref={userMenuRef} className="relative">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center gap-2 rounded-xl p-2 hover:bg-accent/80 transition-all"
+              className={cn(
+                "flex items-center gap-2 rounded-xl p-2",
+                "hover:bg-primary/10 dark:hover:bg-primary/20",
+                "transition-all focus-visible:outline-none",
+                "focus-visible:ring-2 focus-visible:ring-primary/50"
+              )}
             >
               <div className="relative h-8 w-8 overflow-hidden rounded-xl bg-gradient-to-br from-primary/20 to-primary/10">
                 <motion.div

@@ -17,23 +17,21 @@ export function DashboardSidebar({ isOpen, setIsOpen, isMobile }) {
   // Animation variants with improved timing
   const sidebarVariants = {
     open: {
-      width: isMobile ? "100%" : 280,
+      width: isMobile ? "100%" : "280px",
       transition: { 
         type: "spring",
         stiffness: 200,
         damping: 25,
-        mass: 0.5,
-        duration: 0.3
+        mass: 0.5
       }
     },
     closed: {
-      width: isMobile ? 0 : 72,
+      width: isMobile ? 0 : "80px",
       transition: {
         type: "spring",
         stiffness: 200,
         damping: 25,
-        mass: 0.5,
-        duration: 0.3
+        mass: 0.5
       }
     }
   }
@@ -97,21 +95,55 @@ export function DashboardSidebar({ isOpen, setIsOpen, isMobile }) {
               exit="closed"
               className="flex items-center gap-3 flex-1"
             >
-              <motion.div variants={iconVariants} className="flex-shrink-0">
+              <motion.div 
+                variants={iconVariants}
+                className="relative h-8 w-8"
+              >
                 <Logo className="h-8 w-8" />
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent rounded-full"
+                  animate={{ 
+                    scale: [1, 1.2, 1],
+                    opacity: [0, 0.5, 0] 
+                  }}
+                  transition={{ 
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatType: "loop"
+                  }}
+                />
               </motion.div>
-              <span className="font-semibold text-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent truncate">
-                Qubiq.AI
-              </span>
+              <motion.span
+                variants={itemVariants}
+                className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80"
+              >
+                Qubiq
+              </motion.span>
             </motion.div>
           ) : (
             <motion.div
               variants={iconVariants}
-              initial="closed"
-              animate="open"
-              className="flex-shrink-0"
+              className="relative h-8 w-8 mx-auto"
             >
-              <Logo className="h-8 w-8" />
+              <motion.div
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="text-2xl font-bold text-primary"
+              >
+                Q
+              </motion.div>
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent rounded-full"
+                animate={{ 
+                  scale: [1, 1.2, 1],
+                  opacity: [0, 0.5, 0] 
+                }}
+                transition={{ 
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "loop"
+                }}
+              />
             </motion.div>
           )}
         </AnimatePresence>
@@ -122,14 +154,13 @@ export function DashboardSidebar({ isOpen, setIsOpen, isMobile }) {
           onClick={() => setIsOpen(!isOpen)}
           className={cn(
             "rounded-full p-2 ml-auto transition-all",
-            "hover:bg-gray-100/80 dark:hover:bg-gray-800/80",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/50",
-            "dark:focus-visible:ring-indigo-400/50 focus-visible:ring-offset-2",
-            "focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900"
+            "hover:bg-primary/10 dark:hover:bg-primary/20",
+            "focus-visible:outline-none focus-visible:ring-2",
+            "focus-visible:ring-primary/50"
           )}
         >
           <ChevronLeft className={cn(
-            "h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform duration-300",
+            "h-5 w-5 text-primary transition-transform duration-300",
             !isOpen && "rotate-180"
           )} />
         </motion.button>
@@ -156,12 +187,10 @@ export function DashboardSidebar({ isOpen, setIsOpen, isMobile }) {
                   "text-sm font-medium transition-all duration-200",
                   isOpen ? "justify-between" : "justify-center",
                   openGroups.includes(group.title)
-                    ? "bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20" 
-                    : "hover:bg-gray-100/80 dark:hover:bg-gray-800/80",
-                  "focus-visible:outline-none focus-visible:ring-2",
-                  "focus-visible:ring-indigo-500/50 dark:focus-visible:ring-indigo-400/50",
-                  "focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                  "dark:focus-visible:ring-offset-gray-900"
+                    ? "bg-gradient-to-r from-primary/10 to-primary/5" 
+                    : "hover:bg-primary/5",
+                  "group focus-visible:outline-none focus-visible:ring-2",
+                  "focus-visible:ring-primary/50"
                 )}
               >
                 {isOpen ? (
@@ -171,32 +200,24 @@ export function DashboardSidebar({ isOpen, setIsOpen, isMobile }) {
                         variants={iconVariants}
                         className={cn(
                           "rounded-xl p-2.5 transition-all duration-200",
-                          openGroups.includes(group.title)
-                            ? "bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30" 
-                            : "bg-gray-100/80 dark:bg-gray-800/80"
+                          "bg-gradient-to-br from-primary/10 to-transparent",
+                          "group-hover:from-primary/20 group-hover:to-primary/5"
                         )}
                       >
                         <group.icon className={cn(
                           "h-4 w-4 transition-colors",
-                          openGroups.includes(group.title)
-                            ? "text-indigo-600 dark:text-indigo-400" 
-                            : "text-gray-500 dark:text-gray-400"
+                          "text-primary/80 group-hover:text-primary"
                         )} />
                       </motion.div>
                       <motion.span
                         variants={itemVariants}
-                        className={cn(
-                          "transition-colors line-clamp-1",
-                          openGroups.includes(group.title)
-                            ? "text-indigo-600 dark:text-indigo-400"
-                            : "text-gray-700 dark:text-gray-300"
-                        )}
+                        className="text-foreground/80 group-hover:text-foreground"
                       >
                         {group.title}
                       </motion.span>
                     </div>
                     <ChevronDown className={cn(
-                      "h-4 w-4 transition-transform duration-300",
+                      "h-4 w-4 text-primary/60 transition-transform duration-300",
                       openGroups.includes(group.title) && "rotate-180"
                     )} />
                   </>
@@ -205,16 +226,13 @@ export function DashboardSidebar({ isOpen, setIsOpen, isMobile }) {
                     variants={iconVariants}
                     className={cn(
                       "rounded-xl p-2.5 transition-all duration-200",
-                      openGroups.includes(group.title)
-                        ? "bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30" 
-                        : "bg-gray-100/80 dark:bg-gray-800/80"
+                      "bg-gradient-to-br from-primary/10 to-transparent",
+                      "group-hover:from-primary/20 group-hover:to-primary/5"
                     )}
                   >
                     <group.icon className={cn(
                       "h-4 w-4 transition-colors",
-                      openGroups.includes(group.title)
-                        ? "text-indigo-600 dark:text-indigo-400" 
-                        : "text-gray-500 dark:text-gray-400"
+                      "text-primary/80 group-hover:text-primary"
                     )} />
                   </motion.div>
                 )}
@@ -303,6 +321,38 @@ export function DashboardSidebar({ isOpen, setIsOpen, isMobile }) {
                   </motion.div>
                 )}
               </AnimatePresence>
+
+              {!isOpen && openGroups.includes(group.title) && (
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  className="absolute left-full top-0 ml-2 w-56 rounded-xl border bg-background p-2 shadow-lg"
+                >
+                  <div className="space-y-1">
+                    {group.items.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={cn(
+                          "flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors",
+                          pathname === item.href 
+                            ? "bg-primary text-white" 
+                            : "hover:bg-primary/5"
+                        )}
+                      >
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.title}</span>
+                        {item.badge && (
+                          <span className="ml-auto text-xs font-medium text-primary">
+                            {item.badge}
+                          </span>
+                        )}
+                      </Link>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
             </div>
           ))}
         </AnimatePresence>
