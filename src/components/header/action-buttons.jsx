@@ -7,14 +7,14 @@ import { LogIn, Sparkles } from "lucide-react"
 export function ActionButtons() {
   return (
     <div className="hidden md:flex items-center gap-3">
-      <Link href="/sign-in">
+      <Link href="/login">
         <motion.button
           className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-foreground/80 hover:text-foreground rounded-xl hover:bg-muted/50 transition-colors"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
           <LogIn className="w-4 h-4" />
-          Sign In
+          Login
         </motion.button>
       </Link>
       

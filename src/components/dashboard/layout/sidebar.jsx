@@ -100,25 +100,7 @@ export function DashboardSidebar({ isOpen, setIsOpen, isMobile }) {
                 className="relative h-8 w-8"
               >
                 <Logo className="h-8 w-8" />
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent rounded-full"
-                  animate={{ 
-                    scale: [1, 1.2, 1],
-                    opacity: [0, 0.5, 0] 
-                  }}
-                  transition={{ 
-                    duration: 2,
-                    repeat: Infinity,
-                    repeatType: "loop"
-                  }}
-                />
               </motion.div>
-              <motion.span
-                variants={itemVariants}
-                className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80"
-              >
-                Qubiq
-              </motion.span>
             </motion.div>
           ) : (
             <motion.div

@@ -9,8 +9,8 @@ import {
   Lock, 
   Eye, 
   EyeOff, 
-  GithubIcon as GithubIcon, 
-  TwitterIcon as TwitterIcon, 
+  GithubIcon,
+  TwitterIcon,
   ArrowRight, 
   Loader2,
   ChromeIcon
@@ -22,25 +22,49 @@ const socialProviders = [
   { 
     id: 'google',
     name: 'Google',
-    icon: ChromeIcon, // Using Chrome icon as a replacement for Google
+    icon: ChromeIcon,
     bgColor: 'hover:bg-red-50 dark:hover:bg-red-950/30',
-    textColor: 'group-hover:text-red-600 dark:group-hover:text-red-400'
+    textColor: 'group-hover:text-red-600 dark:group-hover:text-red-400',
+    borderHover: 'hover:border-red-200 dark:hover:border-red-800'
   },
   { 
     id: 'github',
     name: 'Github',
     icon: GithubIcon,
     bgColor: 'hover:bg-gray-50 dark:hover:bg-gray-950/30',
-    textColor: 'group-hover:text-gray-900 dark:group-hover:text-gray-100'
+    textColor: 'group-hover:text-gray-900 dark:group-hover:text-gray-100',
+    borderHover: 'hover:border-gray-200 dark:hover:border-gray-800'
   },
   { 
     id: 'twitter',
     name: 'Twitter',
     icon: TwitterIcon,
     bgColor: 'hover:bg-blue-50 dark:hover:bg-blue-950/30',
-    textColor: 'group-hover:text-blue-600 dark:group-hover:text-blue-400'
+    textColor: 'group-hover:text-blue-600 dark:group-hover:text-blue-400',
+    borderHover: 'hover:border-blue-200 dark:hover:border-blue-800'
   }
 ]
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { 
+    opacity: 1,
+    transition: { 
+      when: "beforeChildren",
+      staggerChildren: 0.1,
+      duration: 0.3
+    }
+  }
+}
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: { 
+    y: 0, 
+    opacity: 1,
+    transition: { duration: 0.5 }
+  }
+}
 
 export default function Login() {
   const router = useRouter()
@@ -111,68 +135,93 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-background to-secondary/10">
-      <div className="w-full max-w-md">
+    <div className={cn(
+      "min-h-[100dvh] flex items-center justify-center p-4",
+      "bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))]",
+      "from-primary/10 via-background to-background"
+    )}>
+      <motion.div 
+        className="w-full max-w-md mx-auto"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          variants={itemVariants}
           className={cn(
-            "rounded-2xl border bg-card p-8",
-            "shadow-xl shadow-primary/5",
-            "backdrop-blur-sm bg-background/95"
+            "rounded-2xl border bg-card/50 p-8",
+            "shadow-2xl shadow-primary/5",
+            "backdrop-blur-xl",
+            "relative overflow-hidden"
           )}
         >
+          {/* Decorative Elements */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+            <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-primary/20 to-transparent" />
+            <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-primary/20 to-transparent" />
+          </div>
+
           {/* Logo and Header */}
-          <div className="text-center mb-8">
+          <motion.div 
+            variants={itemVariants}
+            className="text-center mb-8 relative"
+          >
             <motion.div
               initial={{ scale: 0.5, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5 }}
               className="flex justify-center mb-4"
             >
               <Logo className="h-12 w-12" />
             </motion.div>
-            <motion.h1 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-3xl font-bold tracking-tight bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent"
-            >
+            <h1 className={cn(
+              "text-3xl font-bold tracking-tight",
+              "bg-gradient-to-b from-foreground to-foreground/80",
+              "bg-clip-text text-transparent"
+            )}>
               Welcome back
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, transition: { delay: 0.1 } }}
-              className="text-sm text-muted-foreground mt-2"
-            >
+            </h1>
+            <p className="text-sm text-muted-foreground mt-2">
               Enter your credentials to access your account
-            </motion.p>
-          </div>
+            </p>
+          </motion.div>
 
           {/* Enhanced Social Login */}
-          <div className="grid grid-cols-3 gap-3 mb-8">
-            {socialProviders.map((provider) => (
-              <motion.button
-                key={provider.id}
-                onClick={() => handleSocialLogin(provider.id)}
-                disabled={isLoading}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className={cn(
-                  "group flex items-center justify-center gap-2 rounded-xl p-2",
-                  "border border-border/50 bg-background/50",
-                  "hover:border-primary/20 transition-all duration-200",
-                  provider.bgColor,
-                  isLoading && "opacity-50 cursor-not-allowed"
-                )}
-              >
-                <provider.icon className={cn(
-                  "h-5 w-5 transition-colors",
-                  "text-muted-foreground",
-                  provider.textColor
-                )} />
-                <span className="sr-only">Continue with {provider.name}</span>
-              </motion.button>
-            ))}
-          </div>
+          <motion.div 
+            variants={itemVariants}
+            className="grid grid-cols-3 gap-3 mb-8"
+          >
+            {socialProviders.map((provider) => {
+              const Icon = provider.icon
+              return (
+                <motion.button
+                  key={provider.id}
+                  onClick={() => handleSocialLogin(provider.id)}
+                  disabled={isLoading}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={cn(
+                    "group relative flex items-center justify-center gap-2",
+                    "rounded-xl p-2.5 border border-border/50",
+                    "bg-card/50 backdrop-blur-sm",
+                    provider.borderHover,
+                    "transition-all duration-200 ease-in-out",
+                    provider.bgColor,
+                    isLoading && "opacity-50 cursor-not-allowed"
+                  )}
+                >
+                  <Icon className={cn(
+                    "h-5 w-5 transition-colors duration-200",
+                    "text-muted-foreground",
+                    provider.textColor
+                  )} />
+                  <span className="sr-only">Continue with {provider.name}</span>
+                </motion.button>
+              )
+            })}
+          </motion.div>
 
           {/* Enhanced Divider */}
           <div className="relative mb-8">
@@ -364,7 +413,27 @@ export default function Login() {
             </Link>
           </p>
         </motion.div>
-      </div>
+
+        {/* Footer Links */}
+        <motion.div
+          variants={itemVariants}
+          className="mt-6 text-center text-sm text-muted-foreground"
+        >
+          <Link
+            href="/terms"
+            className="hover:text-foreground transition-colors duration-200"
+          >
+            Terms of Service
+          </Link>
+          <span className="mx-2">·</span>
+          <Link
+            href="/privacy"
+            className="hover:text-foreground transition-colors duration-200"
+          >
+            Privacy Policy
+          </Link>
+        </motion.div>
+      </motion.div>
     </div>
   )
 } 

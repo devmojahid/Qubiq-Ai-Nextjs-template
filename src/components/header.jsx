@@ -133,13 +133,13 @@ export function Header() {
               
               {/* Auth Buttons */}
               <div className="hidden lg:flex items-center gap-3">
-                <Link href="/sign-in">
+                <Link href="/login">
                   <motion.button
                     className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground rounded-lg hover:bg-secondary/40 transition-all duration-200"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    Sign In
+                    Login
                   </motion.button>
                 </Link>
                 <Link href="/get-started">
@@ -252,9 +252,9 @@ export function Header() {
 
                 {/* Mobile Auth Buttons */}
                 <div className="pt-4 border-t border-border/40 space-y-2">
-                  <Link href="/sign-in" className="block">
+                  <Link href="/login" className="block">
                     <button className="w-full p-2 text-sm font-medium text-muted-foreground hover:text-foreground rounded-lg hover:bg-secondary/40 transition-colors">
-                      Sign In
+                      Login
                     </button>
                   </Link>
                   <Link href="/get-started" className="block">
