@@ -1,399 +1,553 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
-import { cn } from "@/lib/utils"
 import { Logo } from "@/components/ui/logo"
-import { sidebarNav } from "@/config/navigation"
-import { ChevronLeft, ChevronDown, Settings, LogOut } from "lucide-react"
+import { cn } from "@/lib/utils"
+import {
+  LayoutGrid, FileText, MessageSquare, Eye, Image as ImageIcon,
+  FileCode, Video, Mic, FolderOpen, Files, Star, Clock,
+  LogOut, Search, Settings, ChevronDown, CreditCard, User,
+  Shield, HelpCircle, Gift, BarChart2, Menu,
+  Music, Languages, MicVocal, DollarSign
+} from "lucide-react"
+
+const navigation = {
+  user: [
+    { 
+      id: "dashboard", 
+      title: "Dashboard", 
+      icon: LayoutGrid, 
+      href: "/dashboard",
+      badge: { text: "New", variant: "purple" }
+    },
+    { 
+      id: "documents", 
+      title: "Documents", 
+      icon: FileText, 
+      href: "/documents",
+      badge: { text: "3", variant: "gray" },
+      subItems: [
+        { id: "all", title: "All Documents", href: "/documents/all", icon: Files },
+        { id: "shared", title: "Shared with me", href: "/documents/shared", icon: User },
+        { id: "recent", title: "Recently viewed", href: "/documents/recent", icon: Clock },
+      ]
+    },
+  ],
+  aiTools: [
+    { id: "ai-text", title: "Text Generation", icon: MessageSquare, href: "/dashboard/text"},
+    { id: "ai-image", title: "Image Creation", icon: ImageIcon, href: "/dashboard/image" },
+    { id: "ai-code", title: "Code Assistant", icon: FileCode, href: "/dashboard/code" },
+    { id: "ai-chat", title: "Chat Bot", icon: MessageSquare, href: "/dashboard/chat", badge: { text: "Popular", variant: "yellow" } },
+    { id: "ai-video", title: "Video Generator", icon: Video, href: "/dashboard/video" },
+    { id: "ai-audio", title: "Audio Studio", icon: Music, href: "/dashboard/audio" },
+    { id: "ai-website", title: "Website Builder", icon: Languages, href: "/dashboard/website", badge: { text: "Beta", variant: "purple" } },
+    { id: "ai-speech", title: "Speech to Text", icon: Mic, href: "/dashboard/speech" },
+    { id: "ai-voice", title: "Text to Speech", icon: MicVocal, href: "/dashboard/text-to-speech" },
+  ],
+  manage: [
+    { id: "pricing", title: "Pricing", icon: DollarSign, href: "/dashboard/pricing" },
+    { id: "all-projects", title: "All Projects", icon: Files, href: "/dashboard/projects" },
+  ],
+  templates: [
+    { 
+      id: "popular", 
+      title: "Popular Templates", 
+      icon: Star, 
+      href: "/dashboard/templates/popular",
+      badge: { text: "Hot", variant: "red" }
+    },
+    { id: "recent", title: "Recent Templates", icon: Clock, href: "/dashboard/templates/recent" },
+  ]
+}
+
+const userMenuItems = [
+  {
+    id: "profile",
+    title: "Profile Settings",
+    icon: User,
+    href: "/dashboard/profile",
+    description: "Manage your account"
+  },
+  {
+    id: "billing",
+    title: "Billing",
+    icon: CreditCard,
+    href: "/dashboard/billing",
+    description: "Subscription & payments"
+  },
+  {
+    id: "security",
+    title: "Security",
+    icon: Shield,
+    href: "/dashboard/security",
+    description: "Passwords & 2FA"
+  },
+  {
+    id: "help",
+    title: "Help Center",
+    icon: HelpCircle,
+    href: "/dashboard/help",
+    description: "Support & documentation"
+  }
+]
+
+// Add smooth transition config
+const transitionConfig = {
+  type: "spring",
+  stiffness: 260,
+  damping: 20
+}
+
+// Fixed scrollbar styles using proper syntax
+const scrollbarStyles = {
+  WebkitOverflowScrolling: 'touch',
+  scrollbarWidth: 'thin',
+  scrollbarColor: 'rgb(203 213 225) transparent',
+  '&::-webkit-scrollbar': {
+    width: '4px',
+    display: 'block'
+  },
+  '&::-webkit-scrollbar-track': {
+    background: 'transparent',
+    borderRadius: '8px'
+  },
+  '&::-webkit-scrollbar-thumb': {
+    backgroundColor: 'rgb(203 213 225)',
+    borderRadius: '8px',
+    border: 'none',
+    minHeight: '40px'
+  },
+  '&:hover::-webkit-scrollbar-thumb': {
+    backgroundColor: 'rgb(148 163 184)'
+  }
+}
+
+// Add these styles to globals.css
+const globalStyles = `
+  .sidebar-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(203 213 225) transparent;
+  }
+  
+  .sidebar-scroll::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .sidebar-scroll::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 8px;
+  }
+  
+  .sidebar-scroll::-webkit-scrollbar-thumb {
+    background-color: rgb(203 213 225);
+    border-radius: 8px;
+    min-height: 40px;
+  }
+  
+  .sidebar-scroll:hover::-webkit-scrollbar-thumb {
+    background-color: rgb(148 163 184);
+  }
+`
 
 export function DashboardSidebar({ isOpen, setIsOpen, isMobile }) {
   const pathname = usePathname()
-  const [openGroups, setOpenGroups] = useState([])
-  const [hoveredItem, setHoveredItem] = useState(null)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [openDropdown, setOpenDropdown] = useState(null)
+  const [showUserMenu, setShowUserMenu] = useState(false)
+  const userMenuRef = useRef(null)
+  const dropdownRefs = useRef({})
 
-  // Animation variants with improved timing
-  const sidebarVariants = {
-    open: {
-      width: isMobile ? "100%" : "280px",
-      transition: { 
-        type: "spring",
-        stiffness: 200,
-        damping: 25,
-        mass: 0.5
-      }
-    },
-    closed: {
-      width: isMobile ? 0 : "80px",
-      transition: {
-        type: "spring",
-        stiffness: 200,
-        damping: 25,
-        mass: 0.5
-      }
-    }
-  }
-
-  const itemVariants = {
-    open: {
-      x: 0,
-      opacity: 1,
-      transition: {
-        x: { type: "spring", stiffness: 300, damping: 30 },
-        opacity: { duration: 0.2 }
-      }
-    },
-    closed: {
-      x: -15,
-      opacity: 0,
-      transition: {
-        x: { type: "spring", stiffness: 300, damping: 30 },
-        opacity: { duration: 0.2 }
-      }
-    }
-  }
-
-  const iconVariants = {
-    open: { scale: 1 },
-    closed: { scale: 0.9 }
-  }
-
-  // Auto expand active group
+  // Handle click outside to close dropdowns
   useEffect(() => {
-    const activeGroup = sidebarNav.find(group => 
-      group.items.some(item => item.href === pathname)
-    )
-    if (activeGroup) {
-      setOpenGroups([activeGroup.title])
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setShowUserMenu(false)
+      }
+      
+      Object.entries(dropdownRefs.current).forEach(([key, ref]) => {
+        if (ref && !ref.contains(event.target)) {
+          setOpenDropdown(current => current === key ? null : current)
+        }
+      })
     }
-  }, [pathname])
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  // Add search functionality
+  const handleSearch = (query) => {
+    setSearchQuery(query)
+    // Filter navigation items based on search
+    const results = Object.entries(navigation).reduce((acc, [section, items]) => {
+      const filteredItems = items.filter(item => 
+        item.title.toLowerCase().includes(query.toLowerCase())
+      )
+      if (filteredItems.length > 0) {
+        acc[section] = filteredItems
+      }
+      return acc
+    }, {})
+  }
+
+  const NavLink = ({ item, depth = 0 }) => {
+    const isActive = pathname === item.href
+    const hasSubItems = item.subItems?.length > 0
+    const isDropdownOpen = openDropdown === item.id
+    const buttonRef = useRef(null)
+
+    // Handle focus when dropdown opens
+    useEffect(() => {
+      if (isDropdownOpen && buttonRef.current) {
+        buttonRef.current.focus()
+      }
+    }, [isDropdownOpen])
+
+    // Enhanced focus management
+    useEffect(() => {
+      if (isDropdownOpen && buttonRef.current) {
+        // Smooth scroll into view when dropdown opens
+        buttonRef.current.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'nearest'
+        });
+        buttonRef.current.focus({ preventScroll: true });
+      }
+    }, [isDropdownOpen]);
+
+    const LinkContent = () => (
+      <>
+        <div className={cn(
+          "p-1.5 rounded-lg transition-colors",
+          isActive 
+            ? "bg-purple-100 dark:bg-purple-900/50" 
+            : "bg-gray-50 dark:bg-gray-800 group-hover:bg-gray-100 dark:group-hover:bg-gray-700"
+        )}>
+          <item.icon className={cn(
+            "h-4 w-4 transition-colors",
+            isActive 
+              ? "text-purple-600 dark:text-purple-400" 
+              : "text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300"
+          )} />
+        </div>
+        <span className="flex-1 text-gray-900 dark:text-gray-100">{item.title}</span>
+        {item.badge && (
+          <span className={cn(
+            "px-2 py-0.5 text-[10px] rounded-full font-medium",
+            "transition-colors duration-200",
+            item.badge.variant === "purple" && "bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400",
+            item.badge.variant === "yellow" && "bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400",
+            item.badge.variant === "red" && "bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400",
+            item.badge.variant === "gray" && "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
+          )}>
+            {item.badge.text}
+          </span>
+        )}
+        {hasSubItems && (
+          <ChevronDown className={cn(
+            "h-4 w-4 transition-transform duration-300",
+            isDropdownOpen ? "rotate-180 text-purple-500" : "text-gray-400"
+          )} />
+        )}
+      </>
+    )
+
+    return (
+      <div 
+        ref={el => hasSubItems && (dropdownRefs.current[item.id] = el)}
+        className={cn(
+          "relative",
+          isDropdownOpen && "z-10" // Ensure dropdown is above other items
+        )}
+      >
+        {hasSubItems ? (
+          <button
+            ref={buttonRef}
+            onClick={() => setOpenDropdown(isDropdownOpen ? null : item.id)}
+            className={cn(
+              "group flex w-full items-center gap-3 px-3 py-2 rounded-xl text-sm",
+              "transition-all duration-200",
+              "hover:bg-gray-50/80 active:bg-gray-100/80",
+              "focus:outline-none focus:ring-2 focus:ring-purple-500/20",
+              "relative", // Added for focus ring
+              isActive 
+                ? "bg-purple-50 text-purple-600 font-medium shadow-sm" 
+                : "text-gray-600",
+              depth > 0 && "ml-4"
+            )}
+          >
+            <LinkContent />
+          </button>
+        ) : (
+          <Link
+            href={item.href}
+            className={cn(
+              "group flex items-center gap-3 px-3 py-2 rounded-xl text-sm",
+              "transition-all duration-200",
+              "hover:bg-gray-50 dark:hover:bg-gray-800/50",
+              "active:bg-gray-100/80 dark:active:bg-gray-700/50",
+              "focus:outline-none focus:ring-2 focus:ring-purple-500/20",
+              isActive 
+                ? "bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 font-medium shadow-sm" 
+                : "text-gray-600 dark:text-gray-300",
+              depth > 0 && "ml-4"
+            )}
+          >
+            <LinkContent />
+          </Link>
+        )}
+
+        {/* Enhanced SubItems Dropdown */}
+        <AnimatePresence initial={false}>
+          {hasSubItems && isDropdownOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ 
+                height: "auto", 
+                opacity: 1,
+                transition: {
+                  height: { type: "spring", stiffness: 300, damping: 30, mass: 0.8 },
+                  opacity: { duration: 0.15, ease: "easeOut" }
+                }
+              }}
+              exit={{ 
+                height: 0, 
+                opacity: 0,
+                transition: {
+                  height: { type: "spring", stiffness: 300, damping: 30, mass: 0.8 },
+                  opacity: { duration: 0.1, ease: "easeIn" }
+                }
+              }}
+              className={cn(
+                "overflow-hidden pl-3",
+                "relative z-20"
+              )}
+            >
+              <motion.div 
+                initial={{ x: -10 }}
+                animate={{ x: 0 }}
+                exit={{ x: -10 }}
+                className={cn(
+                  "pt-1 space-y-1",
+                  "border-l-2 border-gray-100 dark:border-gray-800",
+                  "relative" // Added for proper stacking
+                )}
+              >
+                {item.subItems.map(subItem => (
+                  <NavLink key={subItem.id} item={subItem} depth={depth + 1} />
+                ))}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    )
+  }
+
+  const NavSection = ({ title, items }) => (
+    <div>
+      <div className="mb-2 px-3">
+        <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+          {title}
+        </span>
+      </div>
+      <div className="space-y-1">
+        {items
+          .filter(item => 
+            item.title.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+          .map(item => (
+            <NavLink key={item.id} item={item} />
+          ))
+        }
+      </div>
+    </div>
+  )
 
   return (
     <motion.aside
       initial={false}
-      animate={isOpen ? "open" : "closed"}
-      variants={sidebarVariants}
+      animate={{
+        width: isOpen ? (isMobile ? "100%" : "280px") : "0px",
+        opacity: isOpen ? 1 : 0
+      }}
+      transition={{ duration: 0.2 }}
       className={cn(
-        "fixed top-0 left-0 z-30 h-screen",
-        "bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm",
-        "border-r border-gray-200/50 dark:border-gray-800/50",
-        "flex flex-col",
-        "overflow-hidden shadow-sm",
-        isMobile && "w-full max-w-[280px]"
+        "fixed inset-y-0 left-0 w-[280px] z-30",
+        "bg-white dark:bg-gray-900",
+        "border-r border-gray-200 dark:border-gray-800",
+        "transition-all duration-300 ease-in-out",
+        "flex flex-col h-full"
       )}
     >
-      {/* Sidebar Header with improved layout */}
-      <div className="flex h-16 items-center px-4 border-b border-gray-200/50 dark:border-gray-800/50">
-        <AnimatePresence mode="wait">
-          {isOpen ? (
-            <motion.div
-              variants={itemVariants}
-              initial="closed"
-              animate="open"
-              exit="closed"
-              className="flex items-center gap-3 flex-1"
-            >
-              <motion.div 
-                variants={iconVariants}
-                className="relative h-8 w-8"
-              >
-                <Logo className="h-8 w-8" />
-              </motion.div>
-            </motion.div>
-          ) : (
-            <motion.div
-              variants={iconVariants}
-              className="relative h-8 w-8 mx-auto"
-            >
-              <motion.div
-                initial={{ scale: 0.5, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="text-2xl font-bold text-primary"
-              >
-                Q
-              </motion.div>
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent rounded-full"
-                animate={{ 
-                  scale: [1, 1.2, 1],
-                  opacity: [0, 0.5, 0] 
-                }}
-                transition={{ 
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatType: "loop"
-                }}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-        
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setIsOpen(!isOpen)}
-          className={cn(
-            "rounded-full p-2 ml-auto transition-all",
-            "hover:bg-primary/10 dark:hover:bg-primary/20",
-            "focus-visible:outline-none focus-visible:ring-2",
-            "focus-visible:ring-primary/50"
-          )}
-        >
-          <ChevronLeft className={cn(
-            "h-5 w-5 text-primary transition-transform duration-300",
-            !isOpen && "rotate-180"
-          )} />
-        </motion.button>
+      {/* Logo Section */}
+      <div className="flex items-center px-6 h-16 border-b border-gray-200 dark:border-gray-800">
+        <div className="flex items-center gap-2">
+          <Logo className="h-8 w-8" />
+          <span className="font-semibold text-lg text-gray-900 dark:text-white">WriteBot</span>
+        </div>
+        {isMobile && (
+          <button
+            onClick={() => setIsOpen(false)}
+            className="ml-auto p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+          >
+            <Menu className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+          </button>
+        )}
       </div>
 
-      {/* Navigation with improved scrollbar and spacing */}
-      <nav className={cn(
-        "flex-1 overflow-y-auto py-4 px-3 space-y-2",
-        "scrollbar-hidden hover-scrollbar"
-      )}>
-        <AnimatePresence initial={false}>
-          {sidebarNav.map((group) => (
-            <div key={group.title} className="relative">
-              <motion.button
-                onClick={() => {
-                  setOpenGroups(prev => 
-                    prev.includes(group.title)
-                      ? prev.filter(t => t !== group.title)
-                      : [...prev, group.title]
-                  )
-                }}
-                className={cn(
-                  "flex w-full items-center gap-3 rounded-xl p-2.5",
-                  "text-sm font-medium transition-all duration-200",
-                  isOpen ? "justify-between" : "justify-center",
-                  openGroups.includes(group.title)
-                    ? "bg-gradient-to-r from-primary/10 to-primary/5" 
-                    : "hover:bg-primary/5",
-                  "group focus-visible:outline-none focus-visible:ring-2",
-                  "focus-visible:ring-primary/50"
-                )}
-              >
-                {isOpen ? (
-                  <>
-                    <div className="flex items-center gap-3">
-                      <motion.div
-                        variants={iconVariants}
-                        className={cn(
-                          "rounded-xl p-2.5 transition-all duration-200",
-                          "bg-gradient-to-br from-primary/10 to-transparent",
-                          "group-hover:from-primary/20 group-hover:to-primary/5"
-                        )}
-                      >
-                        <group.icon className={cn(
-                          "h-4 w-4 transition-colors",
-                          "text-primary/80 group-hover:text-primary"
-                        )} />
-                      </motion.div>
-                      <motion.span
-                        variants={itemVariants}
-                        className="text-foreground/80 group-hover:text-foreground"
-                      >
-                        {group.title}
-                      </motion.span>
-                    </div>
-                    <ChevronDown className={cn(
-                      "h-4 w-4 text-primary/60 transition-transform duration-300",
-                      openGroups.includes(group.title) && "rotate-180"
-                    )} />
-                  </>
-                ) : (
-                  <motion.div
-                    variants={iconVariants}
-                    className={cn(
-                      "rounded-xl p-2.5 transition-all duration-200",
-                      "bg-gradient-to-br from-primary/10 to-transparent",
-                      "group-hover:from-primary/20 group-hover:to-primary/5"
-                    )}
-                  >
-                    <group.icon className={cn(
-                      "h-4 w-4 transition-colors",
-                      "text-primary/80 group-hover:text-primary"
-                    )} />
-                  </motion.div>
-                )}
-              </motion.button>
+      {/* Enhanced Search */}
+      <div className="p-4 border-b border-gray-200 dark:border-gray-800">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            className={cn(
+              "w-full pl-9 pr-4 py-2 text-sm rounded-lg",
+              "bg-gray-50 dark:bg-gray-800",
+              "border border-gray-200 dark:border-gray-700",
+              "placeholder-gray-500 dark:placeholder-gray-400",
+              "text-gray-900 dark:text-gray-100",
+              "focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500",
+              "transition-colors duration-200"
+            )}
+          />
+        </div>
+      </div>
 
-              {/* Menu Items Dropdown */}
-              <AnimatePresence initial={false}>
-                {(isOpen && openGroups.includes(group.title)) && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ 
-                      height: "auto", 
-                      opacity: 1,
-                      transition: {
-                        height: { type: "spring", stiffness: 200, damping: 25 },
-                        opacity: { duration: 0.2 }
-                      }
-                    }}
-                    exit={{ 
-                      height: 0, 
-                      opacity: 0,
-                      transition: {
-                        height: { type: "spring", stiffness: 200, damping: 25 },
-                        opacity: { duration: 0.2 }
-                      }
-                    }}
-                    className="overflow-hidden"
-                  >
-                    <div className="mt-1 space-y-1 px-3">
-                      {group.items.map((item) => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          onMouseEnter={() => setHoveredItem(item.href)}
-                          onMouseLeave={() => setHoveredItem(null)}
-                          className={cn(
-                            "group relative flex items-center gap-3 rounded-xl p-2 text-sm",
-                            "transition-all duration-200",
-                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/50 dark:focus-visible:ring-indigo-400/50",
-                            "focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900",
-                            pathname === item.href 
-                              ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg" 
-                              : "text-gray-600 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80"
-                          )}
-                        >
-                          <div className={cn(
-                            "rounded-xl p-2 transition-all duration-200",
-                            pathname === item.href 
-                              ? "bg-white/20" 
-                              : "bg-gray-100/80 dark:bg-gray-800/80 group-hover:bg-gray-200/80 dark:group-hover:bg-gray-700/80"
-                          )}>
-                            <item.icon className={cn(
-                              "h-4 w-4 transition-colors",
-                              pathname === item.href 
-                                ? "text-white" 
-                                : "text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300"
-                            )} />
-                          </div>
-                          <div className="flex-1 truncate">
-                            <span className="block truncate">{item.title}</span>
-                            {hoveredItem === item.href && item.description && (
-                              <motion.span
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="text-xs text-gray-400 dark:text-gray-500 truncate"
-                              >
-                                {item.description}
-                              </motion.span>
-                            )}
-                          </div>
-                          {item.badge && (
-                            <span className={cn(
-                              "flex h-5 items-center rounded-full px-2 text-[10px] font-medium",
-                              item.badge === "New" 
-                                ? "bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 text-indigo-600 dark:text-indigo-400"
-                                : item.badge === "Beta"
-                                  ? "bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-600 dark:text-amber-400"
-                                  : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300"
-                            )}>
-                              {item.badge}
-                            </span>
-                          )}
-                        </Link>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+      {/* Enhanced User Profile with Dropdown */}
+      <div className="px-3 mb-6 hidden" ref={userMenuRef}>
+        <button 
+          onClick={() => setShowUserMenu(!showUserMenu)}
+          className="flex items-center gap-3 w-full p-2 rounded-lg hover:bg-gray-50 transition-colors relative"
+        >
+          <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
+            <span className="text-sm font-medium text-purple-600">JD</span>
+          </div>
+          <div className="flex-1 text-left">
+            <p className="text-sm font-medium text-gray-900">John Doe</p>
+            <p className="text-xs text-gray-500">Free Plan</p>
+          </div>
+          <ChevronDown className={cn(
+            "h-4 w-4 text-gray-400 transition-transform",
+            showUserMenu && "rotate-180"
+          )} />
+        </button>
 
-              {!isOpen && openGroups.includes(group.title) && (
-                <motion.div
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -10 }}
-                  className="absolute left-full top-0 ml-2 w-56 rounded-xl border bg-background p-2 shadow-lg"
-                >
-                  <div className="space-y-1">
-                    {group.items.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className={cn(
-                          "flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors",
-                          pathname === item.href 
-                            ? "bg-primary text-white" 
-                            : "hover:bg-primary/5"
-                        )}
-                      >
-                        <item.icon className="h-4 w-4" />
-                        <span>{item.title}</span>
-                        {item.badge && (
-                          <span className="ml-auto text-xs font-medium text-primary">
-                            {item.badge}
-                          </span>
-                        )}
-                      </Link>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </div>
-          ))}
-        </AnimatePresence>
-      </nav>
-
-      {/* User Section */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            variants={itemVariants}
-            initial="closed"
-            animate="open"
-            exit="closed"
-            className="mt-auto p-3"
-          >
+        <AnimatePresence>
+          {showUserMenu && (
             <motion.div
-              whileHover={{ scale: 1.02 }}
-              className={cn(
-                "flex items-center gap-3 rounded-xl p-3",
-                "bg-gradient-to-r from-indigo-50/50 via-purple-50/50 to-pink-50/50",
-                "dark:from-indigo-900/20 dark:via-purple-900/20 dark:to-pink-900/20",
-                "shadow-sm transition-all duration-200"
-              )}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="absolute left-3 right-3 mt-2 p-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
             >
-              <div className="relative h-10 w-10 overflow-hidden rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
-                <motion.div
-                  className="absolute inset-0 flex items-center justify-center text-white font-medium"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
+              {userMenuItems.map((item) => (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  JD
-                </motion.div>
-              </div>
-              <div className="flex-1 overflow-hidden">
-                <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">John Doe</p>
-                <p className="truncate text-xs text-gray-500 dark:text-gray-400">
-                  john@example.com
-                </p>
-              </div>
-              <div className="flex items-center gap-1">
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="rounded-lg p-1.5 hover:bg-white/60 dark:hover:bg-gray-800/60 transition-all"
-                >
-                  <Settings className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="rounded-lg p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 transition-all"
-                >
-                  <LogOut className="h-4 w-4" />
-                </motion.button>
-              </div>
+                  <item.icon className="h-4 w-4 text-gray-500" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">{item.title}</p>
+                    <p className="text-xs text-gray-500">{item.description}</p>
+                  </div>
+                </Link>
+              ))}
             </motion.div>
-          </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Navigation with enhanced scrollbar */}
+      <div 
+        className={cn(
+          "flex-1 px-3 space-y-4 overflow-y-auto custom-scrollbar",
+          "bg-white dark:bg-gray-900",
+          "relative"
         )}
-      </AnimatePresence>
+      >
+        {Object.entries(navigation).map(([key, items]) => (
+          <NavSection
+            key={key}
+            title={key.toUpperCase()}
+            items={items.filter(item => 
+              item.title.toLowerCase().includes(searchQuery.toLowerCase())
+            )}
+          />
+        ))}
+      </div>
+
+      {/* Enhanced Credits Section */}
+      <div className="p-4 border-t border-gray-200 dark:border-gray-800 bg-gradient-to-b from-white dark:from-gray-900 to-gray-50 dark:to-gray-800">
+        <div className="mb-4">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">CREDITS</span>
+            <Link 
+              href="/dashboard/credits" 
+              className="text-xs text-purple-600 hover:text-purple-700 font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-purple-500/20 rounded-lg px-2 py-1 -mr-2"
+            >
+              View Details
+            </Link>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-100 dark:border-gray-700 hover:border-purple-100 dark:hover:border-purple-800 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200">
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-blue-50 border border-blue-100">
+                  <BarChart2 className="h-4 w-4 text-blue-500" />
+                </div>
+                <span className="text-sm text-gray-600">Words</span>
+              </div>
+              <span className="text-sm font-medium bg-blue-50 text-blue-600 px-2 py-0.5 rounded-lg">
+                2,874,661
+              </span>
+            </div>
+            <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-100 dark:border-gray-700 hover:border-purple-100 dark:hover:border-purple-800 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200">
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-green-50 border border-green-100">
+                  <ImageIcon className="h-4 w-4 text-green-500" />
+                </div>
+                <span className="text-sm text-gray-600">Images</span>
+              </div>
+              <span className="text-sm font-medium bg-green-50 text-green-600 px-2 py-0.5 rounded-lg">
+                2,999,608
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Enhanced Affiliate Section */}
+        <div className="p-4 rounded-xl bg-gradient-to-br from-purple-50 via-purple-50/50 to-white border border-purple-100 hidden">
+          <Gift className="h-6 w-6 text-purple-500 mx-auto mb-2" />
+          <p className="text-sm font-medium text-gray-900 mb-1">
+            Invite your friend
+          </p>
+          <p className="text-xs text-gray-600 mb-3">
+            and get 10% on all their purchases
+          </p>
+          <button className="w-full px-4 py-2 text-sm font-medium text-purple-600 bg-white rounded-xl border border-purple-100 hover:bg-purple-50 hover:border-purple-200 transition-all duration-200 shadow-sm">
+            Invite Now
+          </button>
+        </div>
+      </div>
+
+      {/* Enhanced Logout Button */}
+      <div className="p-4 bg-gradient-to-t from-gray-50 dark:from-gray-800 to-white dark:to-gray-900">
+        <button
+          onClick={() => console.log('Logout')}
+          className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all duration-200 border border-transparent hover:border-red-100 dark:hover:border-red-800 hover:shadow-sm"
+        >
+          <LogOut className="h-4 w-4" />
+          <span>Logout</span>
+        </button>
+      </div>
     </motion.aside>
   )
 } 

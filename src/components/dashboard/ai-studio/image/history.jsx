@@ -1,10 +1,10 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { 
   History, Star, Clock, Calendar,
   ImageIcon, Download, Share2, Trash2,
-  Paintbrush, Wand2, Settings, Maximize2
+  Paintbrush, Wand2, Settings, Maximize2, X
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -82,7 +82,7 @@ const historyItems = [
   }
 ]
 
-export function ImageHistory({ showHistory, onToggleHistory, onSelectImage }) {
+export function ImageHistory({ showHistory, onToggleHistory, onSelectImage, isMobile }) {
   const formatTimeAgo = (timestamp) => {
     const date = new Date(timestamp)
     const now = new Date()
@@ -237,6 +237,161 @@ export function ImageHistory({ showHistory, onToggleHistory, onSelectImage }) {
         >
           View {historyItems.length - 3} more items
         </motion.button>
+      )}
+
+      {isMobile ? (
+        <AnimatePresence>
+          {showHistory && (
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[48] lg:hidden bg-black/50 backdrop-blur-sm"
+                onClick={() => onToggleHistory(false)}
+              />
+
+              {/* Modal */}
+              <motion.div
+                initial={{ opacity: 0, y: "100%" }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: "100%" }}
+                className="fixed inset-x-0 bottom-0 z-[49] rounded-t-xl bg-background shadow-xl"
+                style={{ maxHeight: "85vh" }}
+                onClick={e => e.stopPropagation()}
+              >
+                {/* Modal Header */}
+                <div className="sticky top-0 z-10 flex items-center justify-between p-4 border-b bg-background/80 backdrop-blur-sm">
+                  <h3 className="font-semibold flex items-center gap-2">
+                    <History className="h-4 w-4 text-primary" />
+                    Generation History
+                  </h3>
+                  <button
+                    onClick={() => onToggleHistory(false)}
+                    className="p-2 hover:bg-secondary/80 rounded-lg transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+
+                {/* Modal Content */}
+                <div className="overflow-y-auto p-4" style={{ maxHeight: "calc(85vh - 64px)" }}>
+                  <div className="space-y-4">
+                    {historyItems.map((item, index) => (
+                      <motion.div
+                        key={item.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="group relative"
+                      >
+                        <motion.button
+                          onClick={() => onSelectImage(item)}
+                          className={cn(
+                            "w-full rounded-xl p-3 text-left transition-all",
+                            "border border-border/50",
+                            "hover:border-primary/50 hover:shadow-md",
+                            "bg-card/50 hover:bg-card"
+                          )}
+                        >
+                          <div className="flex gap-3">
+                            {/* Image Preview */}
+                            <div className="relative h-20 w-20 rounded-lg overflow-hidden border border-border/50">
+                              <img
+                                src={item.preview}
+                                alt={item.prompt}
+                                className="h-full w-full object-cover"
+                              />
+                              <div className={cn(
+                                "absolute inset-0 bg-gradient-to-t from-black/50 to-transparent",
+                                "opacity-0 group-hover:opacity-100 transition-opacity"
+                              )} />
+                            </div>
+
+                            {/* Content */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <h4 className="font-medium truncate">{item.prompt}</h4>
+                                {item.starred && (
+                                  <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400 flex-shrink-0" />
+                                )}
+                              </div>
+                              <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                  <Paintbrush className="h-3.5 w-3.5" />
+                                  {item.style}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Clock className="h-3.5 w-3.5" />
+                                  {formatTimeAgo(item.timestamp)}
+                                </span>
+                                <span className="hidden sm:flex items-center gap-1">
+                                  <Settings className="h-3.5 w-3.5" />
+                                  {item.settings.width}×{item.settings.height}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.button>
+
+                        {/* Quick Actions */}
+                        <div className={cn(
+                          "absolute right-2 top-2",
+                          "flex items-center gap-1",
+                          "opacity-0 group-hover:opacity-100",
+                          "transition-opacity"
+                        )}>
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                            className={cn(
+                              "rounded-lg p-1.5",
+                              "bg-secondary/80 hover:bg-secondary",
+                              "text-muted-foreground hover:text-foreground",
+                              "transition-colors"
+                            )}
+                          >
+                            <Download className="h-3.5 w-3.5" />
+                          </motion.button>
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                            className={cn(
+                              "rounded-lg p-1.5",
+                              "bg-secondary/80 hover:bg-secondary",
+                              "text-muted-foreground hover:text-foreground",
+                              "transition-colors"
+                            )}
+                          >
+                            <Share2 className="h-3.5 w-3.5" />
+                          </motion.button>
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                            className={cn(
+                              "rounded-lg p-1.5",
+                              "bg-red-500/10 hover:bg-red-500/20",
+                              "text-red-500",
+                              "transition-colors"
+                            )}
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </motion.button>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+      ) : (
+        // Desktop version
+        <motion.div className="rounded-xl border bg-card">
+          {/* ... existing history content ... */}
+        </motion.div>
       )}
     </motion.div>
   )

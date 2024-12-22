@@ -21,9 +21,11 @@ import {
   Music,
   Languages,
   Home,
+  Mic,
   User as UserIcon,
   Zap,
-  Wand2
+  Wand2,
+  MicVocal
 } from "lucide-react"
 
 export const mainNav = [
@@ -88,10 +90,22 @@ export const sidebarNav = [
         description: "Text-to-speech and audio generation"
       },
       {
-        title: "Language Tools",
-        href: "/dashboard/language",
+        title: "Website Builder",
+        href: "/dashboard/website",
         icon: Languages,
-        description: "Translation and language processing"
+        description: "Create stunning websites with AI"
+      },
+      {
+        title: "Speech to Text",
+        href: "/dashboard/speech",
+        icon: Mic,
+        description: "Convert speech to text"
+      },
+      {
+        title: "Text to Speech",
+        href: "/dashboard/text-to-speech",
+        icon: MicVocal,
+        description: "Convert text to speech"
       }
     ]
   },

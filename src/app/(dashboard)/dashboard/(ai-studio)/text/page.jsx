@@ -91,7 +91,7 @@ export default function TextGenerationPage() {
   }
 
   return (
-    <div className="container max-w-7xl space-y-8 p-8">
+    <div className="max-w-full space-y-8 p-8">
       {/* Header Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

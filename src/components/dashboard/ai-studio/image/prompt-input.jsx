@@ -68,72 +68,47 @@ export function ImagePromptInput({
       className="space-y-4"
     >
       {/* Main Prompt Input */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <label className="text-sm font-medium">Prompt</label>
-          {selectedStyle && (
-            <button
-              onClick={() => setShowSuggestions(!showSuggestions)}
-              className="text-sm text-primary hover:underline"
-            >
-              View Suggestions
-            </button>
+      <div className="space-y-4">
+        <textarea
+          value={prompt}
+          onChange={(e) => onPromptChange(e.target.value)}
+          placeholder="Describe the image you want to generate..."
+          className={cn(
+            "w-full min-h-[80px] sm:min-h-[100px] p-3 sm:p-4 rounded-xl",
+            "bg-background border border-border/50",
+            "focus:border-primary focus:ring-1 focus:ring-primary",
+            "placeholder:text-muted-foreground",
+            "text-sm sm:text-base",
+            "resize-none"
           )}
-        </div>
-
-        <div className="relative">
-          <textarea
-            value={prompt}
-            onChange={(e) => onPromptChange(e.target.value)}
-            placeholder="Describe the image you want to generate..."
+        />
+        
+        {/* Generate Button */}
+        <div className="flex flex-col sm:flex-row gap-2 sm:justify-end">
+          <button
+            onClick={onGenerate}
+            disabled={!prompt.trim() || isGenerating}
             className={cn(
-              "w-full min-h-[100px] p-4 rounded-xl",
-              "bg-background border border-border/50",
-              "focus:border-primary focus:ring-1 focus:ring-primary",
-              "placeholder:text-muted-foreground",
-              "resize-none"
+              "flex-1 sm:flex-none inline-flex items-center justify-center gap-2",
+              "rounded-xl bg-primary px-4 py-2.5",
+              "text-sm font-medium text-primary-foreground",
+              "disabled:opacity-50 disabled:cursor-not-allowed",
+              "transition-all duration-200"
             )}
-          />
-          
-          {/* Character Count */}
-          <div className="absolute bottom-2 right-2 text-xs text-muted-foreground">
-            {prompt.length} / 1000
-          </div>
+          >
+            {isGenerating ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Wand2 className="h-4 w-4" />
+                Generate
+              </>
+            )}
+          </button>
         </div>
-
-        {/* Prompt Suggestions */}
-        <AnimatePresence>
-          {showSuggestions && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="rounded-xl border bg-card/50 p-4"
-            >
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                <Lightbulb className="h-4 w-4 text-primary" />
-                Suggested prompts for {selectedStyle.name}
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {getPromptSuggestions().map((suggestion, index) => (
-                  <motion.button
-                    key={index}
-                    onClick={() => onPromptChange(suggestion)}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={cn(
-                      "rounded-lg px-3 py-1.5 text-sm",
-                      "bg-secondary/50 hover:bg-secondary",
-                      "transition-colors"
-                    )}
-                  >
-                    {suggestion}
-                  </motion.button>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
 
       {/* Negative Prompt Section */}
@@ -205,36 +180,6 @@ export function ImagePromptInput({
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
-
-      {/* Generate Button */}
-      <div className="flex justify-end">
-        <motion.button
-          onClick={onGenerate}
-          disabled={!prompt.trim() || isGenerating}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className={cn(
-            "inline-flex items-center gap-2 rounded-xl",
-            "bg-primary px-6 py-2.5 text-sm font-medium",
-            "text-primary-foreground shadow-sm",
-            "hover:opacity-90 hover:shadow-md",
-            "disabled:opacity-50 disabled:cursor-not-allowed",
-            "transition-all duration-200"
-          )}
-        >
-          {isGenerating ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Generating...
-            </>
-          ) : (
-            <>
-              <Wand2 className="h-4 w-4" />
-              Generate
-            </>
-          )}
-        </motion.button>
       </div>
     </motion.div>
   )
