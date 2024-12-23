@@ -11,7 +11,8 @@ import {
   FileCode, Video, Mic, FolderOpen, Files, Star, Clock,
   LogOut, Search, Settings, ChevronDown, CreditCard, User,
   Shield, HelpCircle, Gift, BarChart2, Menu,
-  Music, Languages, MicVocal, DollarSign
+  Music, Languages, MicVocal, DollarSign,
+  Bell,Key
 } from "lucide-react"
 
 const navigation = {
@@ -24,15 +25,15 @@ const navigation = {
       badge: { text: "New", variant: "purple" }
     },
     { 
-      id: "documents", 
-      title: "Documents", 
+      id: "account-management", 
+      title: "Account Management", 
       icon: FileText, 
-      href: "/documents",
+      href: "/account-management",
       badge: { text: "3", variant: "gray" },
       subItems: [
-        { id: "all", title: "All Documents", href: "/documents/all", icon: Files },
-        { id: "shared", title: "Shared with me", href: "/documents/shared", icon: User },
-        { id: "recent", title: "Recently viewed", href: "/documents/recent", icon: Clock },
+        { id: "profile", title: "Profile Settings", href: "/dashboard/profile", icon: User },
+        { id: "security", title: "Security", href: "/dashboard/security", icon: Shield },
+        { id: "api-keys", title: "API Keys", href: "/dashboard/api-keys", icon: Key },
       ]
     },
   ],
@@ -48,18 +49,27 @@ const navigation = {
     { id: "ai-voice", title: "Text to Speech", icon: MicVocal, href: "/dashboard/text-to-speech" },
   ],
   manage: [
-    { id: "pricing", title: "Pricing", icon: DollarSign, href: "/dashboard/pricing" },
-    { id: "all-projects", title: "All Projects", icon: Files, href: "/dashboard/projects" },
+
+    { id: "help", title: "Help Center", icon: HelpCircle, href: "/dashboard/help" },
+    { id: "support", title: "Support", icon: MessageSquare, href: "/dashboard/support" },
+    { id: "release-notes", title: "Release Notes", icon: Bell, href: "/dashboard/release-notes" },
   ],
-  templates: [
+  billing: [
+    { id: "analytics", title: "Analytics", icon: BarChart2, href: "/dashboard/analytics/usage" },
+    { id: "pricing", title: "Pricing", icon: DollarSign, href: "/dashboard/pricing" },
+    { id: "billing-history", title: "Billing History", icon: DollarSign, href: "/dashboard/billing/history" },
+    { id: "payment-methods", title: "Payment Methods", icon: CreditCard, href: "/dashboard/billing/payment-methods" },
+    { id: "subscription", title: "Subscription", icon: CreditCard, href: "/dashboard/billing/subscription" },
+  ],
+  developer: [
     { 
-      id: "popular", 
-      title: "Popular Templates", 
+      id: "api-playground", 
+      title: "API Playground", 
       icon: Star, 
-      href: "/dashboard/templates/popular",
+      href: "/dashboard/developer/playground",
       badge: { text: "Hot", variant: "red" }
     },
-    { id: "recent", title: "Recent Templates", icon: Clock, href: "/dashboard/templates/recent" },
+    { id: "playground", title: "Playground", icon: Clock, href: "/dashboard/developer/testing" },
   ]
 }
 
