@@ -85,7 +85,7 @@ export default function AudioGenerationPage() {
       setTimeout(() => {
         const newAudio = {
           id: Date.now(),
-          url: "/sample-audio.wav",
+          url: "/files/audios/vlog-music.mp3",
           prompt,
           settings,
           waveform: generateWaveformData(),

@@ -236,7 +236,7 @@ export function Hero() {
                 <span>Try it for Free</span>
                 <ArrowRight className="h-4 w-4 ml-1" />
                 <motion.div
-                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-white/0 via-white/20 to-white/0"
+                  className="absolute inset-0 rounded-xl from-white/0 via-white/20 to-white/0"
                   animate={{ x: ['100%', '-100%'] }}
                   transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
                 />

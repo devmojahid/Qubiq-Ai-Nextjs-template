@@ -26,7 +26,7 @@ const navigation = {
     },
     { 
       id: "account-management", 
-      title: "Account Management", 
+      title: "Account", 
       icon: FileText, 
       href: "/account-management",
       badge: { text: "3", variant: "gray" },
@@ -243,7 +243,7 @@ export function DashboardSidebar({ isOpen, setIsOpen, isMobile }) {
               : "text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300"
           )} />
         </div>
-        <span className="flex-1 text-gray-900 dark:text-gray-100">{item.title}</span>
+        <span className="flex-1 text-gray-900 dark:text-gray-100 text-left">{item.title}</span>
         {item.badge && (
           <span className={cn(
             "px-2 py-0.5 text-[10px] rounded-full font-medium",
@@ -397,7 +397,6 @@ export function DashboardSidebar({ isOpen, setIsOpen, isMobile }) {
       <div className="flex items-center px-6 h-16 border-b border-gray-200 dark:border-gray-800">
         <div className="flex items-center gap-2">
           <Logo className="h-8 w-8" />
-          <span className="font-semibold text-lg text-gray-900 dark:text-white">WriteBot</span>
         </div>
         {isMobile && (
           <button
@@ -500,8 +499,8 @@ export function DashboardSidebar({ isOpen, setIsOpen, isMobile }) {
         <div className="mb-4">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-medium text-gray-500 dark:text-gray-400">CREDITS</span>
-            <Link 
-              href="/dashboard/credits" 
+            <Link
+              href="dashboard/analytics/usage" 
               className="text-xs text-purple-600 hover:text-purple-700 font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-purple-500/20 rounded-lg px-2 py-1 -mr-2"
             >
               View Details
@@ -513,21 +512,12 @@ export function DashboardSidebar({ isOpen, setIsOpen, isMobile }) {
                 <div className="p-1.5 rounded-lg bg-blue-50 border border-blue-100">
                   <BarChart2 className="h-4 w-4 text-blue-500" />
                 </div>
-                <span className="text-sm text-gray-600">Words</span>
+                <span className="text-sm text-gray-600">
+                  Credits
+                </span>
               </div>
               <span className="text-sm font-medium bg-blue-50 text-blue-600 px-2 py-0.5 rounded-lg">
                 2,874,661
-              </span>
-            </div>
-            <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-100 dark:border-gray-700 hover:border-purple-100 dark:hover:border-purple-800 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200">
-              <div className="flex items-center gap-2.5">
-                <div className="p-1.5 rounded-lg bg-green-50 border border-green-100">
-                  <ImageIcon className="h-4 w-4 text-green-500" />
-                </div>
-                <span className="text-sm text-gray-600">Images</span>
-              </div>
-              <span className="text-sm font-medium bg-green-50 text-green-600 px-2 py-0.5 rounded-lg">
-                2,999,608
               </span>
             </div>
           </div>

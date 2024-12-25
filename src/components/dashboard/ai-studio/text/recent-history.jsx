@@ -1,236 +1,143 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { 
-  History, Star, Clock, Calendar,
-  FileText, MessageSquare, Mail, PenTool,
-  Presentation, ShoppingBag, BookOpen, Megaphone,
-  Code2, ScrollText, Newspaper
-} from "lucide-react"
+import { History, Clock, FileText, Trash2, ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-// Sample history data (in a real app, this would come from an API/database)
-export const recentHistory = [
-  {
-    id: 1,
-    title: "Marketing Campaign Copy",
-    preview: "Create a compelling marketing campaign for our new AI-powered platform that highlights...",
-    content: "Create a compelling marketing campaign for our new AI-powered platform that highlights its innovative features, user-friendly interface, and transformative benefits. Focus on how it helps businesses streamline their operations and boost productivity.",
-    template: {
-      id: "marketing",
-      name: "Marketing",
-      icon: Megaphone
+export function RecentHistory({ 
+  showHistory, 
+  onToggleHistory, 
+  isMobile, 
+  onClose,
+  onSelectHistory 
+}) {
+  // Sample history data - replace with real data
+  const history = [
+    {
+      id: 1,
+      title: "Product Description",
+      preview: "A sleek and modern smartwatch...",
+      timestamp: "2 hours ago",
+      template: { name: "Product" }
     },
-    timestamp: "2024-02-15T10:30:00Z",
-    stats: {
-      words: 1250,
-      characters: 6800,
-      model: "gpt-4"
+    {
+      id: 2,
+      title: "Blog Post",
+      preview: "The future of AI technology...",
+      timestamp: "3 hours ago",
+      template: { name: "Blog" }
     },
-    starred: true
-  },
-  {
-    id: 2,
-    title: "Technical Documentation",
-    preview: "Write comprehensive API documentation for the new authentication endpoints...",
-    content: "Write comprehensive API documentation for the new authentication endpoints, including request/response formats, error handling, and security considerations. Include practical examples and best practices.",
-    template: {
-      id: "technical",
-      name: "Technical",
-      icon: Code2
-    },
-    timestamp: "2024-02-15T09:15:00Z",
-    stats: {
-      words: 850,
-      characters: 4200,
-      model: "gpt-4"
-    },
-    starred: false
-  },
-  {
-    id: 3,
-    title: "Blog Post: AI Trends",
-    preview: "Write an engaging blog post about the top AI trends in 2024, focusing on...",
-    content: "Write an engaging blog post about the top AI trends in 2024, focusing on practical applications in business, emerging technologies, and their impact on various industries. Include real-world examples and expert insights.",
-    template: {
-      id: "blog",
-      name: "Blog Post",
-      icon: FileText
-    },
-    timestamp: "2024-02-15T08:00:00Z",
-    stats: {
-      words: 1500,
-      characters: 7500,
-      model: "gpt-4"
-    },
-    starred: true
-  },
-  {
-    id: 4,
-    title: "Product Description",
-    preview: "Create a compelling product description for our new smart home device...",
-    content: "Create a compelling product description for our new smart home device that emphasizes its unique features, benefits, and how it integrates seamlessly with existing home automation systems. Focus on both technical specifications and user benefits.",
-    template: {
-      id: "product",
-      name: "Product",
-      icon: ShoppingBag
-    },
-    timestamp: "2024-02-14T16:45:00Z",
-    stats: {
-      words: 600,
-      characters: 3000,
-      model: "gpt-3.5"
-    },
-    starred: false
-  },
-  {
-    id: 5,
-    title: "Email Campaign",
-    preview: "Draft a series of follow-up emails for our enterprise software launch...",
-    content: "Draft a series of follow-up emails for our enterprise software launch, targeting decision-makers in large organizations. Focus on value proposition, ROI, and addressing common pain points in workflow automation.",
-    template: {
-      id: "email",
-      name: "Email",
-      icon: Mail
-    },
-    timestamp: "2024-02-14T15:30:00Z",
-    stats: {
-      words: 750,
-      characters: 3800,
-      model: "gpt-4"
-    },
-    starred: true
-  }
-]
+    {
+      id: 3,
+      title: "Marketing Copy",
+      preview: "Introducing our revolutionary...",
+      timestamp: "5 hours ago",
+      template: { name: "Marketing" }
+    }
+  ]
 
-export function RecentHistory({ onSelectHistory, showHistory, onToggleHistory }) {
-  const formatTimeAgo = (timestamp) => {
-    const date = new Date(timestamp)
-    const now = new Date()
-    const diff = now - date
-
-    const minutes = Math.floor(diff / 60000)
-    const hours = Math.floor(minutes / 60)
-    const days = Math.floor(hours / 24)
-
-    if (days > 0) return `${days}d ago`
-    if (hours > 0) return `${hours}h ago`
-    return `${minutes}m ago`
-  }
+  const handleToggle = () => {
+    if (typeof onToggleHistory === 'function') {
+      onToggleHistory(!showHistory);
+    }
+  };
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.1 }}
-      className="rounded-xl border bg-card p-6 space-y-6"
+      initial={false}
+      animate={{ 
+        opacity: showHistory ? 1 : 0,
+        scale: showHistory ? 1 : 0.95
+      }}
+      transition={{ 
+        duration: 0.2,
+        ease: "easeInOut"
+      }}
+      className={cn(
+        "rounded-xl border bg-card",
+        "transition-all duration-200",
+        isMobile ? "h-[calc(100vh-16rem)] overflow-y-auto" : "",
+        !showHistory && !isMobile && "hidden"
+      )}
     >
-      <div className="flex items-center justify-between">
-        <h3 className="font-semibold flex items-center gap-2">
-          <History className="h-4 w-4 text-primary" />
-          Recent Generations
-        </h3>
-        <button
-          onClick={() => onToggleHistory(!showHistory)}
-          className="text-sm text-primary hover:underline"
-        >
-          {showHistory ? "Show Less" : "View All"}
-        </button>
-      </div>
-
-      <div className="space-y-4">
-        {(showHistory ? recentHistory : recentHistory.slice(0, 3)).map((item, index) => (
-          <motion.div
-            key={item.id}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="group relative"
-          >
-            <motion.button
-              onClick={() => onSelectHistory(item)}
-              className={cn(
-                "w-full rounded-xl p-4 text-left transition-all",
-                "border border-border/50",
-                "hover:border-primary/50 hover:shadow-md",
-                "bg-card/50 hover:bg-card"
-              )}
+      <div className="border-b p-3 sm:p-4">
+        <div className="flex items-center justify-between">
+          <h3 className="font-medium sm:font-semibold flex items-center gap-2 text-sm sm:text-base">
+            <History className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+            Recent Generations
+          </h3>
+          {!isMobile && (
+            <button
+              onClick={handleToggle}
+              className="text-xs sm:text-sm text-muted-foreground hover:text-foreground flex items-center gap-1.5 transition-colors"
             >
-              <div className="flex items-center gap-3">
-                <div className={cn(
-                  "rounded-lg p-2.5",
-                  "bg-primary/10"
-                )}>
-                  {item.template?.icon && (
-                    <item.template.icon className="h-4 w-4 text-primary" />
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-medium truncate">{item.title}</h4>
-                    {item.starred && (
-                      <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
-                    )}
-                  </div>
-                  <p className="text-sm text-muted-foreground truncate">
-                    {item.preview}
-                  </p>
-                  <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3.5 w-3.5" />
-                      {formatTimeAgo(item.timestamp)}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <FileText className="h-3.5 w-3.5" />
-                      {item.stats.words} words
-                    </span>
-                    <span className="hidden sm:flex items-center gap-1">
-                      <Calendar className="h-3.5 w-3.5" />
-                      {new Date(item.timestamp).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </motion.button>
-
-            {/* Quick Actions */}
-            <div className={cn(
-              "absolute right-2 top-2",
-              "flex items-center gap-1",
-              "opacity-0 group-hover:opacity-100",
-              "transition-opacity"
-            )}>
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                className={cn(
-                  "rounded-lg p-1.5",
-                  "bg-secondary/80 hover:bg-secondary",
-                  "text-muted-foreground hover:text-foreground",
-                  "transition-colors"
-                )}
-              >
-                <Star className="h-3.5 w-3.5" />
-              </motion.button>
-            </div>
-          </motion.div>
-        ))}
+              <span>{showHistory ? "Hide" : "Show"}</span>
+              <ChevronDown className={cn(
+                "h-3.5 w-3.5 transition-transform duration-200",
+                showHistory && "rotate-180"
+              )} />
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* View More Button */}
-      {!showHistory && recentHistory.length > 3 && (
-        <motion.button
-          onClick={() => onToggleHistory(true)}
-          className={cn(
-            "w-full rounded-lg p-3 text-center",
-            "border border-dashed border-border/50",
-            "text-sm text-muted-foreground",
-            "hover:border-primary/50 hover:text-primary",
-            "transition-colors"
-          )}
-        >
-          View {recentHistory.length - 3} more items
-        </motion.button>
+      <div className={cn(
+        "divide-y",
+        isMobile ? "" : "max-h-[calc(100vh-24rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800",
+        showHistory ? "opacity-100" : "opacity-0"
+      )}>
+        {history.map((item) => (
+          <div
+            key={item.id}
+            className="p-3 sm:p-4 hover:bg-muted/50 transition-colors"
+          >
+            <button
+              onClick={() => onSelectHistory(item)}
+              className="w-full text-left space-y-1"
+            >
+              <div className="flex items-center justify-between">
+                <h4 className="text-sm font-medium line-clamp-1">
+                  {item.title}
+                </h4>
+                <span className="text-[10px] sm:text-xs text-muted-foreground flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  {item.timestamp}
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground line-clamp-2">
+                {item.preview}
+              </p>
+              <div className="flex items-center gap-2 mt-2">
+                <span className="text-[10px] bg-secondary/50 px-2 py-0.5 rounded-full">
+                  {item.template.name}
+                </span>
+              </div>
+            </button>
+          </div>
+        ))}
+
+        {history.length === 0 && (
+          <div className="p-4 text-center">
+            <p className="text-sm text-muted-foreground">No history yet</p>
+          </div>
+        )}
+      </div>
+
+      {/* Mobile Close Button */}
+      {isMobile && (
+        <div className="p-4 border-t">
+          <button
+            onClick={onClose}
+            className={cn(
+              "w-full inline-flex items-center justify-center gap-2",
+              "bg-primary text-primary-foreground",
+              "px-4 py-2 rounded-lg text-sm font-medium",
+              "transition-colors hover:bg-primary/90"
+            )}
+          >
+            Close History
+          </button>
+        </div>
       )}
     </motion.div>
   )

@@ -1,140 +1,141 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Settings, Zap, Clock, Brain } from "lucide-react"
+import { Sliders, Sparkles, Zap, Cpu } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-export function GenerationSettings({ settings, onSettingsChange }) {
-  const models = [
-    { id: "gpt-4", name: "GPT-4", description: "Most capable, slower", icon: Brain },
-    { id: "gpt-3.5", name: "GPT-3.5", description: "Fast, efficient", icon: Zap }
-  ]
-
-  const tones = [
-    "Professional", "Casual", "Friendly", "Formal",
-    "Technical", "Creative", "Persuasive", "Informative"
-  ]
+export function GenerationSettings({ settings, onSettingsChange, isVisible, isMobile, onClose }) {
+  const handleSettingChange = (key, value) => {
+    onSettingsChange({
+      ...settings,
+      [key]: value
+    })
+  }
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      className="rounded-xl border bg-card p-6 space-y-6"
+      initial={false}
+      animate={{ opacity: isVisible ? 1 : 0 }}
+      className={cn(
+        "rounded-xl border bg-card overflow-hidden",
+        "transition-all duration-200",
+        isMobile ? "h-[calc(100vh-16rem)] overflow-y-auto" : ""
+      )}
     >
-      <h3 className="font-semibold flex items-center gap-2">
-        <Settings className="h-4 w-4 text-primary" />
-        Generation Settings
-      </h3>
+      <div className="border-b p-3 sm:p-4">
+        <h3 className="font-medium sm:font-semibold flex items-center gap-2 text-sm sm:text-base">
+          <Sliders className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+          Generation Settings
+        </h3>
+      </div>
 
-      <div className="space-y-6">
+      <div className="p-3 sm:p-4 space-y-4">
         {/* Model Selection */}
-        <div className="space-y-3">
-          <label className="text-sm font-medium">AI Model</label>
-          <div className="grid gap-3">
-            {models.map((model) => (
+        <div className="space-y-2">
+          <label className="text-xs sm:text-sm font-medium">Model</label>
+          <div className="grid grid-cols-2 gap-2">
+            {["gpt-4", "gpt-3.5"].map((model) => (
               <button
-                key={model.id}
-                onClick={() => onSettingsChange({ ...settings, model: model.id })}
+                key={model}
+                onClick={() => handleSettingChange("model", model)}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg p-3 text-left",
-                  "border border-border/50 transition-all",
-                  settings.model === model.id 
-                    ? "border-primary bg-primary/5"
-                    : "hover:border-primary/50"
+                  "flex items-center gap-2 p-2 sm:p-2.5 rounded-lg text-xs sm:text-sm",
+                  "transition-colors duration-200",
+                  settings.model === model
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary/50 hover:bg-secondary"
                 )}
               >
-                <div className={cn(
-                  "rounded-lg p-2",
-                  "bg-primary/10"
-                )}>
-                  <model.icon className="h-4 w-4 text-primary" />
-                </div>
-                <div>
-                  <div className="font-medium">{model.name}</div>
-                  <div className="text-sm text-muted-foreground">
-                    {model.description}
-                  </div>
-                </div>
+                <Cpu className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                {model}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Writing Tone */}
-        <div className="space-y-3">
-          <label className="text-sm font-medium">Writing Tone</label>
-          <div className="flex flex-wrap gap-2">
-            {tones.map((tone) => (
-              <button
-                key={tone}
-                onClick={() => onSettingsChange({ ...settings, tone })}
-                className={cn(
-                  "rounded-lg px-3 py-1.5 text-sm",
-                  "border border-border/50 transition-all",
-                  settings.tone === tone 
-                    ? "border-primary bg-primary/5"
-                    : "hover:border-primary/50"
-                )}
-              >
-                {tone}
-              </button>
-            ))}
+        {/* Temperature Slider */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <label className="text-xs sm:text-sm font-medium">Temperature</label>
+            <span className="text-xs text-muted-foreground">
+              {settings.temperature.toFixed(1)}
+            </span>
+          </div>
+          <input
+            type="range"
+            min={0}
+            max={2}
+            step={0.1}
+            value={settings.temperature}
+            onChange={(e) => handleSettingChange("temperature", parseFloat(e.target.value))}
+            className="w-full"
+          />
+          <div className="flex justify-between text-[10px] sm:text-xs text-muted-foreground">
+            <span>Precise</span>
+            <span>Creative</span>
           </div>
         </div>
 
-        {/* Advanced Settings */}
-        <div className="space-y-4">
-          <div>
-            <label className="text-sm font-medium">Creativity Level</label>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.1"
-              value={settings.temperature}
-              onChange={(e) => onSettingsChange({ 
-                ...settings, 
-                temperature: parseFloat(e.target.value) 
-              })}
-              className="w-full mt-2"
-            />
-            <div className="flex justify-between text-xs text-muted-foreground mt-1">
-              <span>Focused</span>
-              <span>Creative</span>
-            </div>
+        {/* Max Tokens Slider */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <label className="text-xs sm:text-sm font-medium">Maximum Length</label>
+            <span className="text-xs text-muted-foreground">
+              {settings.maxTokens} tokens
+            </span>
           </div>
-
-          <div>
-            <label className="text-sm font-medium">Output Length</label>
-            <select
-              value={settings.maxTokens}
-              onChange={(e) => onSettingsChange({ 
-                ...settings, 
-                maxTokens: parseInt(e.target.value) 
-              })}
-              className={cn(
-                "mt-1.5 w-full rounded-lg border border-border/50",
-                "bg-background px-3 py-2 text-sm",
-                "focus:border-primary focus:ring-1 focus:ring-primary"
-              )}
-            >
-              <option value="250">Short (~250 words)</option>
-              <option value="500">Medium (~500 words)</option>
-              <option value="1000">Long (~1000 words)</option>
-              <option value="2000">Very Long (~2000 words)</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="text-sm font-medium">Response Time</label>
-            <div className="flex items-center gap-2 mt-1.5">
-              <Clock className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">
-                ~{settings.model === "gpt-4" ? "20-30" : "5-10"} seconds
-              </span>
-            </div>
+          <input
+            type="range"
+            min={100}
+            max={4000}
+            step={100}
+            value={settings.maxTokens}
+            onChange={(e) => handleSettingChange("maxTokens", parseInt(e.target.value))}
+            className="w-full"
+          />
+          <div className="flex justify-between text-[10px] sm:text-xs text-muted-foreground">
+            <span>Short</span>
+            <span>Long</span>
           </div>
         </div>
+
+        {/* Top P Slider */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <label className="text-xs sm:text-sm font-medium">Top P</label>
+            <span className="text-xs text-muted-foreground">
+              {settings.topP.toFixed(1)}
+            </span>
+          </div>
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.1}
+            value={settings.topP}
+            onChange={(e) => handleSettingChange("topP", parseFloat(e.target.value))}
+            className="w-full"
+          />
+          <div className="flex justify-between text-[10px] sm:text-xs text-muted-foreground">
+            <span>Focused</span>
+            <span>Diverse</span>
+          </div>
+        </div>
+
+        {/* Mobile Close Button */}
+        {isMobile && (
+          <button
+            onClick={onClose}
+            className={cn(
+              "w-full mt-4 inline-flex items-center justify-center gap-2",
+              "bg-primary text-primary-foreground",
+              "px-4 py-2 rounded-lg text-sm font-medium",
+              "transition-colors hover:bg-primary/90"
+            )}
+          >
+            Apply Settings
+          </button>
+        )}
       </div>
     </motion.div>
   )

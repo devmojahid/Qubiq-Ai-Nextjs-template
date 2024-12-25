@@ -1,258 +1,170 @@
 "use client"
 
 import { motion, AnimatePresence } from "framer-motion"
-import { 
-  Palette, Camera, Brush, Layers,
-  Paintbrush, Frame, Wand2, Sparkles,
-  Shapes, Mountain, Building, Shirt,
-  Glasses, Pencil, Eraser, Spline,
-  Info, Star, Clock, Zap
-} from "lucide-react"
+import { Palette, Camera, Brush, Boxes, Shapes } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useState } from "react"
 
-export const imageStyles = [
-  {
-    id: "photorealistic",
-    name: "Photorealistic",
-    description: "Ultra-realistic photographic style",
+const styles = [
+  { 
+    id: "all", 
+    label: "All", 
+    description: "All styles",
+    icon: Palette,
+    examples: [
+      "https://source.unsplash.com/random/400x400?art,all",
+      "https://source.unsplash.com/random/400x400?design,all"
+    ]
+  },
+  { 
+    id: "realistic", 
+    label: "Realistic", 
+    description: "Photo-realistic images",
     icon: Camera,
     examples: [
       "https://source.unsplash.com/random/400x400?photo,realistic",
-      "https://source.unsplash.com/random/400x400?photo,camera"
-    ],
-    features: ["High Detail", "Natural Lighting", "Real-world Accuracy"],
-    credits: 2
+      "https://source.unsplash.com/random/400x400?photography"
+    ]
   },
-  {
-    id: "digital-art",
-    name: "Digital Art",
-    description: "Modern digital artwork style",
-    icon: Palette,
-    examples: [
-      "https://source.unsplash.com/random/400x400?digital,art",
-      "https://source.unsplash.com/random/400x400?artwork"
-    ],
-    features: ["Vibrant Colors", "Creative Freedom", "Modern Look"],
-    credits: 1
-  },
-  {
-    id: "anime",
-    name: "Anime",
-    description: "Japanese anime and manga style",
+  { 
+    id: "artistic", 
+    label: "Artistic", 
+    description: "Creative artistic styles",
     icon: Brush,
     examples: [
-      "https://source.unsplash.com/random/400x400?anime",
-      "https://source.unsplash.com/random/400x400?manga"
-    ],
-    features: ["Japanese Style", "Manga-inspired", "Cartoonish"],
-    credits: 1
+      "https://source.unsplash.com/random/400x400?art,painting",
+      "https://source.unsplash.com/random/400x400?artwork"
+    ]
   },
-  {
-    id: "3d",
-    name: "3D Render",
-    description: "3D rendered graphics style",
-    icon: Layers,
+  { 
+    id: "abstract", 
+    label: "Abstract", 
+    description: "Abstract art styles",
+    icon: Shapes,
+    examples: [
+      "https://source.unsplash.com/random/400x400?abstract,art",
+      "https://source.unsplash.com/random/400x400?modern,abstract"
+    ]
+  },
+  { 
+    id: "3d", 
+    label: "3D", 
+    description: "3D rendered images",
+    icon: Boxes,
     examples: [
       "https://source.unsplash.com/random/400x400?3d,render",
       "https://source.unsplash.com/random/400x400?3d,model"
-    ],
-    features: ["3D Modeling", "Realistic Rendering", "High Detail"],
-    credits: 2
-  },
-  {
-    id: "painting",
-    name: "Painting",
-    description: "Traditional painting styles",
-    icon: Paintbrush,
-    examples: [
-      "https://source.unsplash.com/random/400x400?painting",
-      "https://source.unsplash.com/random/400x400?art"
-    ],
-    features: ["Traditional Medium", "Artistic Techniques", "Natural Brushwork"],
-    credits: 1
-  },
-  {
-    id: "pixel",
-    name: "Pixel Art",
-    description: "Retro pixel art style",
-    icon: Frame,
-    examples: [
-      "https://source.unsplash.com/random/400x400?pixel,art",
-      "https://source.unsplash.com/random/400x400?retro,game"
-    ],
-    features: ["Retro Style", "Pixelated Graphics", "Classic Game Art"],
-    credits: 1
-  },
-  {
-    id: "concept",
-    name: "Concept Art",
-    description: "Professional concept artwork",
-    icon: Wand2,
-    examples: [
-      "https://source.unsplash.com/random/400x400?concept,art",
-      "https://source.unsplash.com/random/400x400?fantasy"
-    ],
-    features: ["Professional Quality", "Concept Development", "Artistic Freedom"],
-    credits: 2
-  },
-  {
-    id: "abstract",
-    name: "Abstract",
-    description: "Modern abstract art style",
-    icon: Shapes,
-    examples: [
-      "https://source.unsplash.com/random/400x400?abstract",
-      "https://source.unsplash.com/random/400x400?modern,art"
-    ],
-    features: ["Modern Art", "Abstract Composition", "Artistic Freedom"],
-    credits: 1
+    ]
   }
 ]
 
 export function ImageStyleSelector({ selectedStyle, onSelectStyle }) {
-  const [hoveredStyle, setHoveredStyle] = useState(null)
-
   return (
     <div className="space-y-6">
-      {/* Style Categories */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2">
-        {["All", "Realistic", "Artistic", "Abstract", "3D"].map((category) => (
-          <motion.button
-            key={category}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className={cn(
-              "rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap",
-              "bg-secondary/50 hover:bg-secondary/80",
-              "transition-all duration-200"
-            )}
-          >
-            {category}
-          </motion.button>
-        ))}
-      </div>
-
-      {/* Style Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {imageStyles.map((style) => (
-          <motion.div
-            key={style.id}
-            onHoverStart={() => setHoveredStyle(style.id)}
-            onHoverEnd={() => setHoveredStyle(null)}
-            className="relative group"
-          >
+      {/* Style Tabs - Horizontally Scrollable on Mobile */}
+      <div className="w-full overflow-x-auto scrollbar-none">
+        <div className="flex gap-2 min-w-max px-0.5 pb-2">
+          {styles.map((style) => (
             <motion.button
-              onClick={() => onSelectStyle(style)}
+              key={style.id}
+              onClick={() => onSelectStyle(style.id)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className={cn(
-                "w-full rounded-xl p-4 text-left",
-                "border border-border/50 transition-all duration-200",
-                "hover:shadow-lg hover:shadow-primary/5",
-                selectedStyle?.id === style.id 
-                  ? "border-primary bg-primary/5 shadow-md shadow-primary/10"
-                  : "hover:border-primary/50 hover:bg-secondary/50"
+                "relative px-4 py-2 text-sm font-medium rounded-lg",
+                "transition-all duration-200",
+                "hover:bg-secondary/80",
+                "focus:outline-none focus:ring-2 focus:ring-primary/20",
+                selectedStyle === style.id 
+                  ? "bg-primary text-primary-foreground" 
+                  : "bg-secondary/50 text-foreground"
               )}
             >
-              {/* Style Header */}
-              <div className="flex items-start gap-3">
-                <div className={cn(
-                  "rounded-lg p-2.5",
-                  "bg-gradient-to-br from-primary/10 to-primary/5",
-                  "ring-1 ring-primary/10"
-                )}>
-                  <style.icon className="h-5 w-5 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium truncate">{style.name}</span>
-                    <span className={cn(
-                      "px-2 py-0.5 rounded-full text-xs",
-                      "bg-primary/10 text-primary"
-                    )}>
-                      {style.credits} credits
-                    </span>
+              <span className="flex items-center gap-2">
+                <style.icon className="h-4 w-4" />
+                {style.label}
+              </span>
+              {selectedStyle === style.id && (
+                <motion.div
+                  layoutId="activeStyleTab"
+                  className="absolute inset-0 bg-primary rounded-lg -z-10"
+                  transition={{ type: "spring", duration: 0.5 }}
+                />
+              )}
+            </motion.button>
+          ))}
+        </div>
+      </div>
+
+      {/* Style Content */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={selectedStyle}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+        >
+          {styles
+            .filter(style => selectedStyle === "all" || style.id === selectedStyle)
+            .map((style) => (
+              <motion.div
+                key={style.id}
+                whileHover={{ scale: 1.02 }}
+                className={cn(
+                  "group relative rounded-xl overflow-hidden",
+                  "border border-border/50",
+                  "transition-all duration-200",
+                  "hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5"
+                )}
+              >
+                {/* Style Header */}
+                <div className="absolute inset-x-0 top-0 p-4 bg-gradient-to-b from-black/60 to-transparent z-10">
+                  <div className="flex items-center gap-2 text-white">
+                    <style.icon className="h-4 w-4" />
+                    <span className="font-medium">{style.label}</span>
                   </div>
-                  <p className="text-sm text-muted-foreground truncate">
+                  <p className="text-xs text-white/80 mt-1">
                     {style.description}
                   </p>
                 </div>
-              </div>
 
-              {/* Style Examples */}
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                {style.examples.map((example, index) => (
-                  <div
-                    key={index}
-                    className="relative aspect-square rounded-lg overflow-hidden"
-                  >
-                    <img
-                      src={example}
-                      alt={`${style.name} example ${index + 1}`}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
+                {/* Style Examples Grid */}
+                <div className="grid grid-cols-2 aspect-[2/1]">
+                  {style.examples.map((example, index) => (
+                    <div key={index} className="relative aspect-square">
+                      <img
+                        src={example}
+                        alt={`${style.label} example ${index + 1}`}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
 
-              {/* Style Features */}
-              <div className="mt-3 flex flex-wrap gap-2">
-                {style.features.map((feature, index) => (
-                  <span
-                    key={index}
+                {/* Hover Overlay */}
+                <div className={cn(
+                  "absolute inset-0 bg-black/60",
+                  "opacity-0 group-hover:opacity-100",
+                  "transition-opacity duration-200",
+                  "flex items-center justify-center"
+                )}>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => onSelectStyle(style.id)}
                     className={cn(
-                      "inline-flex items-center rounded-full",
-                      "px-2 py-0.5 text-xs",
-                      "bg-secondary text-secondary-foreground",
-                      "ring-1 ring-border/50"
+                      "px-4 py-2 rounded-lg",
+                      "bg-white text-black",
+                      "text-sm font-medium"
                     )}
                   >
-                    {feature}
-                  </span>
-                ))}
-              </div>
-            </motion.button>
-
-            {/* Enhanced Tooltip */}
-            <AnimatePresence>
-              {hoveredStyle === style.id && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  className={cn(
-                    "absolute left-full top-1/2 -translate-y-1/2 ml-2 z-50",
-                    "w-72 p-4 rounded-lg",
-                    "bg-popover border shadow-xl",
-                    "backdrop-blur-sm"
-                  )}
-                >
-                  <div className="flex items-start gap-3">
-                    <Info className="h-5 w-5 text-primary mt-0.5" />
-                    <div className="space-y-2">
-                      <p className="font-medium">{style.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {style.description}
-                      </p>
-                      <div className="pt-2 flex items-center gap-3 text-xs text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3.5 w-3.5" />
-                          ~30s generation
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Sparkles className="h-3.5 w-3.5" />
-                          {style.credits} credits/image
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        ))}
-      </div>
+                    Select Style
+                  </motion.button>
+                </div>
+              </motion.div>
+            ))}
+        </motion.div>
+      </AnimatePresence>
     </div>
   )
 } 

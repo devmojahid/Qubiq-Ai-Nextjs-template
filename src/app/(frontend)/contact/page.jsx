@@ -419,7 +419,7 @@ function MapSection() {
                 fill
                 className="object-cover"
               /> */}
-              <img className="object-cover" src="https://images.unsplash.com/3/jerry-adney.jpg?q=80&w=2076&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Office Locations Map" />
+              <img className="object-cover" src="/images/contact/location.jpg" alt="Office Locations Map" />
               {offices.map((office, index) => (
                 <motion.div
                   key={index}

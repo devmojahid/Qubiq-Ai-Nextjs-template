@@ -59,8 +59,8 @@ const team = [
     role: "CEO & Co-founder",
     image: "/images/team/sarah.jpg",
     social: {
-      twitter: "#",
-      linkedin: "#"
+      twitter: "https://twitter.com/sarahjohnson",
+      linkedin: "https://www.linkedin.com/in/sarahjohnson"
     }
   },
   {
@@ -68,11 +68,28 @@ const team = [
     role: "CTO & Co-founder",
     image: "/images/team/michael.jpg",
     social: {
-      twitter: "#",
-      linkedin: "#"
+      twitter: "https://twitter.com/michaelchen",
+      linkedin: "https://www.linkedin.com/in/michaelchen"
     }
   },
-  // Add more team members as needed
+  {
+    name: "Emily White",
+    role: "Product Manager",
+    image: "/images/team/emma.jpg",
+    social: {
+      twitter: "https://twitter.com/emilywhite",
+      linkedin: "https://www.linkedin.com/in/emilywhite"
+    }
+  },
+  {
+    name: "David Lee",
+    role: "Marketing Manager",
+    image: "/images/team/david.jpg",
+    social: {
+      twitter: "https://twitter.com/davidlee",
+      linkedin: "https://www.linkedin.com/in/davidlee"
+    }
+  }
 ]
 
 function StatsCard({ stat, index }) {

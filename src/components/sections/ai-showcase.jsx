@@ -139,7 +139,7 @@ const cardVariants = {
     }
   },
   hover: {
-    scale: 1.02,
+    y: -5,
     transition: { duration: 0.2 }
   },
   tap: { scale: 0.98 }
@@ -169,7 +169,27 @@ const typewriterAnimation = (text, speed = 30) => {
   }
 }
 
-// Add this component for animated code generation
+// Add custom scrollbar styles
+const customScrollbar = {
+  scrollbarWidth: 'thin',
+  scrollbarColor: 'hsl(var(--primary)/50) transparent',
+  '&::-webkit-scrollbar': {
+    width: '3px',
+    height: '3px',
+  },
+  '&::-webkit-scrollbar-track': {
+    background: 'transparent',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    background: 'hsl(var(--primary)/50)',
+    borderRadius: '6px',
+    '&:hover': {
+      background: 'hsl(var(--primary)/70)',
+    },
+  },
+}
+
+// Update AnimatedCode component with better scrollbar and UI
 function AnimatedCode({ code, isPlaying, language = "jsx" }) {
   const [displayedCode, setDisplayedCode] = useState(code)
   const [currentLine, setCurrentLine] = useState(0)
@@ -208,9 +228,8 @@ function AnimatedCode({ code, isPlaying, language = "jsx" }) {
   }, [isPlaying, code, isInitialRun])
 
   return (
-    <div className="relative rounded-lg overflow-hidden border border-border/50 bg-background/95">
-      {/* Enhanced Code Editor Header */}
-      <div className="flex items-center justify-between px-4 py-2 bg-secondary/30 border-b border-border/50">
+    <div className="relative rounded-lg overflow-hidden border border-border/50">
+      <div className="flex items-center justify-between px-4 py-2 bg-secondary/10 border-b border-border/50">
         <div className="flex items-center gap-3">
           <div className="flex gap-1.5">
             <div className="w-3 h-3 rounded-full bg-red-500/20" />
@@ -229,13 +248,15 @@ function AnimatedCode({ code, isPlaying, language = "jsx" }) {
         </div>
       </div>
       
-      {/* Enhanced Code Display */}
       <div className="relative">
-        <pre className={cn(
-          "p-4 overflow-auto max-h-[400px] min-h-[200px]",
-          "bg-background/95",
-          "transition-colors duration-200"
-        )}>
+        <pre 
+          className={cn(
+            "p-4 overflow-auto max-h-[400px] min-h-[200px]",
+            "bg-background/80",
+            "transition-colors duration-200"
+          )}
+          style={customScrollbar}
+        >
           <code className="text-sm font-mono leading-relaxed">
             {displayedCode}
             {isPlaying && (
@@ -243,7 +264,7 @@ function AnimatedCode({ code, isPlaying, language = "jsx" }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: [0, 1, 0] }}
                 transition={{ duration: 0.8, repeat: Infinity }}
-                className="inline-block w-2 h-4 bg-primary/50 ml-1 align-middle"
+                className="inline-block w-2 h-4 bg-primary/70 ml-1 align-middle"
               />
             )}
           </code>
@@ -252,13 +273,13 @@ function AnimatedCode({ code, isPlaying, language = "jsx" }) {
         {/* Enhanced Progress Bar */}
         {isPlaying && (
           <motion.div 
-            className="absolute bottom-0 left-0 right-0 h-0.5"
+            className="absolute bottom-0 left-0 right-0 h-1"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <div className="h-full bg-secondary/30">
+            <div className="h-full bg-primary/10">
               <motion.div
-                className="h-full bg-primary/50"
+                className="h-full bg-primary/40 backdrop-blur-none"
                 initial={{ width: "0%" }}
                 animate={{ width: `${(currentLine / codeLines.length) * 100}%` }}
                 transition={{ duration: 0.2 }}
@@ -271,126 +292,35 @@ function AnimatedCode({ code, isPlaying, language = "jsx" }) {
   )
 }
 
-// Add this component for animated image generation
-function AnimatedImage({ image, variations, isPlaying, isGenerating, progress }) {
+// Update ImageGenerationDemo with better UI
+function ImageGenerationDemo({ image, variations, isGenerating, progress, onGenerate }) {
   const [currentImage, setCurrentImage] = useState(0)
-  const [generationSteps, setGenerationSteps] = useState([])
-  const imageRef = useRef(null)
-
-  const steps = [
-    { label: "Analyzing prompt...", overlay: "bg-blue-500/20" },
-    { label: "Generating composition...", overlay: "bg-purple-500/20" },
-    { label: "Adding details...", overlay: "bg-pink-500/20" },
-    { label: "Refining image...", overlay: "bg-orange-500/20" },
-    { label: "Finalizing...", overlay: "bg-green-500/20" }
-  ]
-
-  useEffect(() => {
-    if (isPlaying && variations?.length) {
-      const interval = setInterval(() => {
-        setCurrentImage(prev => (prev + 1) % variations.length)
-      }, 2000)
-      return () => clearInterval(interval)
-    }
-  }, [isPlaying, variations])
-
-  useEffect(() => {
-    if (isGenerating) {
-      setGenerationSteps([])
-      steps.forEach((step, index) => {
-        setTimeout(() => {
-          setGenerationSteps(prev => [...prev, step])
-        }, index * 1000)
-      })
-    }
-  }, [isGenerating])
+  const [isZoomed, setIsZoomed] = useState(false)
 
   return (
-    <div className="relative rounded-lg overflow-hidden">
-      {/* Image Preview Header */}
-      <div className="flex items-center justify-between px-3 py-1.5 bg-secondary/30 border-b border-border/50">
-        <div className="flex items-center gap-2">
-          <div className="flex gap-1">
-            <div className="w-2.5 h-2.5 rounded-full bg-red-500/20" />
-            <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20" />
-            <div className="w-2.5 h-2.5 rounded-full bg-green-500/20" />
-          </div>
-          <span className="text-[10px] font-medium">Image Preview</span>
-        </div>
-        {variations?.length > 0 && (
-          <span className="text-[10px] text-muted-foreground">
-            Variation {currentImage + 1}/{variations.length}
-          </span>
-        )}
-      </div>
-
-      {/* Image Container */}
-      <div className="relative aspect-video bg-secondary/30">
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-secondary/50 to-transparent"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isGenerating ? 1 : 0 }}
+    <div className="space-y-4">
+      <motion.div 
+        className="relative aspect-video rounded-lg overflow-hidden bg-gradient-to-br from-secondary/5 to-transparent"
+        whileHover={{ y: -2 }}
+        onClick={() => setIsZoomed(true)}
+      >
+        <img
+          src={variations?.[currentImage] || image}
+          alt="AI Generated"
+          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
         />
-
-        {/* Generation Steps Overlay */}
-        {isGenerating && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="space-y-2 p-4 backdrop-blur-sm rounded-lg bg-background/50">
-              {generationSteps.map((step, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="flex items-center gap-2"
-                >
-                  <motion.div
-                    className={cn(
-                      "w-2 h-2 rounded-full",
-                      step.overlay
-                    )}
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 1, repeat: Infinity }}
-                  />
-                  <span className="text-xs font-medium">{step.label}</span>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Image Display */}
-        <motion.div
-          className="absolute inset-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Image
-            ref={imageRef}
-            src={variations?.[currentImage] || image}
-            alt="AI Generated"
-            fill
-            className={cn(
-              "object-cover transition-transform duration-500",
-              isPlaying && "hover:scale-105"
-            )}
-          />
-        </motion.div>
-
-        {/* Image Controls Overlay */}
-        <div className={cn(
-          "absolute inset-0 bg-gradient-to-t from-black/50 to-transparent",
-          "opacity-0 hover:opacity-100 transition-opacity duration-200"
-        )}>
-          <div className="absolute bottom-3 right-3 flex gap-2">
-            {variations?.length > 0 && (
+        
+        {/* Image Controls - Enhanced without blur */}
+        <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-all duration-300">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+          <div className="absolute bottom-4 right-4 flex gap-2">
+            {variations?.length > 1 && (
               <motion.button
-                onClick={() => setCurrentImage((prev) => (prev + 1) % variations.length)}
-                className={cn(
-                  "p-1.5 rounded-lg",
-                  "bg-white/10 hover:bg-white/20",
-                  "backdrop-blur-sm transition-colors"
-                )}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setCurrentImage((prev) => (prev + 1) % variations.length)
+                }}
+                className="p-2.5 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -398,12 +328,14 @@ function AnimatedImage({ image, variations, isPlaying, isGenerating, progress })
               </motion.button>
             )}
             <motion.button
-              onClick={() => {/* Add download functionality */}}
-              className={cn(
-                "p-1.5 rounded-lg",
-                "bg-white/10 hover:bg-white/20",
-                "backdrop-blur-sm transition-colors"
-              )}
+              onClick={(e) => {
+                e.stopPropagation()
+                const link = document.createElement('a')
+                link.href = variations?.[currentImage] || image
+                link.download = 'ai-generated-image.jpg'
+                link.click()
+              }}
+              className="p-2.5 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -412,605 +344,355 @@ function AnimatedImage({ image, variations, isPlaying, isGenerating, progress })
           </div>
         </div>
 
-        {/* Generation Progress */}
+        {/* Generation Progress - Enhanced */}
         {isGenerating && (
-          <motion.div 
-            className="absolute bottom-0 left-0 right-0 h-1 bg-primary/10"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 5 }}
+          <div className="absolute inset-0 flex items-center justify-center bg-black/80">
+            <div className="text-center">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                className="mx-auto mb-3"
+              >
+                <RefreshCw className="w-6 h-6 text-white" />
+              </motion.div>
+              <div className="text-sm text-white font-medium">
+                Generating Image... {Math.round(progress)}%
+              </div>
+            </div>
+          </div>
+        )}
+      </motion.div>
+
+      {/* Enhanced Image Zoom Modal */}
+      <AnimatePresence>
+        {isZoomed && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
+            onClick={() => setIsZoomed(false)}
           >
-            <motion.div
-              className="h-full bg-primary"
-              style={{ width: `${progress}%` }}
+            <motion.img
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              src={variations?.[currentImage] || image}
+              alt="AI Generated"
+              className="max-w-full max-h-[90vh] rounded-lg shadow-2xl"
             />
           </motion.div>
         )}
-      </div>
+      </AnimatePresence>
     </div>
   )
 }
 
-function DemoCard({ item, isActive, onClick }) {
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [currentVariation, setCurrentVariation] = useState(0)
-  const [displayedCode, setDisplayedCode] = useState("// Click Run Generation to start...")
-  const cardRef = useRef(null)
-  const [copied, setCopied] = useState(false)
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [generationStep, setGenerationStep] = useState(0)
-  const [imageProgress, setImageProgress] = useState(0)
-  const [messages, setMessages] = useState([])
+// Update ChatCompletionDemo with better UI
+function ChatCompletionDemo({ messages, isGenerating, onSendMessage }) {
+  const [input, setInput] = useState("")
   const chatRef = useRef(null)
-  
-  const steps = [
-    { label: "Analyzing prompt...", duration: 1000 },
-    { label: "Generating code structure...", duration: 1500 },
-    { label: "Implementing functionality...", duration: 2000 },
-    { label: "Optimizing code...", duration: 1000 }
-  ]
 
-  // Reset code when card becomes inactive
   useEffect(() => {
-    if (!isActive) {
-      setDisplayedCode("// Click Run Generation to start...")
-      setIsPlaying(false)
-      setIsGenerating(false)
-      setGenerationStep(0)
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight
     }
-  }, [isActive])
+  }, [messages])
 
-  // Handle code copy
-  const handleCopy = async (code) => {
-    await navigator.clipboard.writeText(code)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
+  return (
+    <div className="space-y-4">
+      <div 
+        ref={chatRef}
+        className={cn(
+          "h-[300px] overflow-y-auto rounded-lg",
+          "border border-border/50",
+          "bg-gradient-to-b from-secondary/5 to-transparent",
+          "p-4 space-y-4"
+        )}
+        style={customScrollbar}
+      >
+        {messages.map((message, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={cn(
+              "flex gap-3 p-3 rounded-lg",
+              message.role === "user" 
+                ? "bg-primary/10 ml-auto max-w-[80%]" 
+                : "bg-secondary/20 mr-auto max-w-[80%]"
+            )}
+          >
+            <div className="shrink-0 w-6 h-6">
+              {message.role === "user" ? (
+                <User className="w-full h-full text-primary/70" />
+              ) : (
+                <Sparkles className="w-full h-full text-primary/70" />
+              )}
+            </div>
+            <div className="flex-1 text-sm leading-relaxed">
+              {message.content}
+            </div>
+          </motion.div>
+        ))}
 
-  // Enhanced code generation with better state management
-  const handleCodeGeneration = async () => {
+        {/* Enhanced Loading State */}
+        {isGenerating && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex gap-3 p-3 rounded-lg bg-secondary/20 mr-auto max-w-[80%]"
+          >
+            <div className="shrink-0 w-6 h-6">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              >
+                <RefreshCw className="w-full h-full text-primary/70" />
+              </motion.div>
+            </div>
+            <div className="flex-1 text-sm">
+              <motion.span
+                animate={{ opacity: [1, 0.5, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                Generating response...
+              </motion.span>
+            </div>
+          </motion.div>
+        )}
+      </div>
+
+      {/* Chat Input - Enhanced with better mobile layout */}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          if (input.trim() && !isGenerating) {
+            onSendMessage(input.trim())
+            setInput("")
+          }
+        }}
+        className="flex flex-col sm:flex-row gap-2"
+      >
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Type your message..."
+          className={cn(
+            "flex-1 px-4 py-2.5 rounded-lg",
+            "bg-secondary/5 border border-border/50",
+            "focus:outline-none focus:ring-2 focus:ring-primary/20",
+            "transition-all duration-200",
+            "placeholder:text-muted-foreground/50",
+            "w-full sm:w-auto" // Added for better mobile width
+          )}
+          disabled={isGenerating}
+        />
+        <motion.button
+          type="submit"
+          className={cn(
+            "px-4 py-2.5 rounded-lg",
+            "bg-primary/90 hover:bg-primary text-primary-foreground",
+            "transition-colors duration-200",
+            "disabled:opacity-50",
+            "shadow-sm hover:shadow-md",
+            "w-full sm:w-auto" // Added for better mobile width
+          )}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          disabled={!input.trim() || isGenerating}
+        >
+          Send
+        </motion.button>
+      </form>
+    </div>
+  )
+}
+
+// Update the DemoCard component to use these new components
+function DemoCard({ item, demoState, updateDemoState }) {
+  const {
+    isGenerating,
+    isPlaying,
+    progress,
+    currentVariation,
+    messages
+  } = demoState
+
+  // Handle generation based on type
+  const handleGeneration = async () => {
     if (isGenerating) return
-    
-    setIsGenerating(true)
-    setIsPlaying(true)
-    setDisplayedCode("// Initializing code generation...")
-    
-    try {
-      // Show generation steps
-      for (let i = 0; i < steps.length; i++) {
-        setGenerationStep(i)
-        setDisplayedCode(prev => 
-          prev + `\n// ${steps[i].label}`
-        )
-        await new Promise(resolve => setTimeout(resolve, steps[i].duration))
-      }
 
-      // Generate code line by line
-      const codeLines = item.demo.output.split('\n')
-      for (let i = 0; i < codeLines.length; i++) {
-        setDisplayedCode(prev => 
-          prev + '\n' + codeLines[i]
-        )
-        await new Promise(resolve => setTimeout(resolve, 50))
-      }
-    } catch (error) {
-      setDisplayedCode("// An error occurred during generation.\n// Please try again.")
-    } finally {
-      setGenerationStep(-1)
-      setIsGenerating(false)
-    }
-  }
-
-  // Handle play/pause
-  const handlePlayPause = () => {
-    if (!isPlaying) {
-      handleCodeGeneration()
-    } else {
-      setIsPlaying(false)
-    }
-  }
-
-  // Handle image variations
-  const handleNextVariation = (e) => {
-    e.stopPropagation()
-    if (item.demo.variations) {
-      setCurrentVariation((prev) => 
-        (prev + 1) % item.demo.variations.length
-      )
-    }
-  }
-
-  // Add image generation handler
-  const handleImageGeneration = async () => {
-    if (isGenerating) return
-    
-    setIsGenerating(true)
-    setIsPlaying(true)
-    setImageProgress(0)
+    updateDemoState({ 
+      isGenerating: true, 
+      isPlaying: true,
+      progress: 0 
+    })
 
     try {
-      // Simulate image generation progress
-      const duration = 5000 // 5 seconds
-      const interval = 50 // Update every 50ms
+      // Simulate generation progress
+      const duration = 5000
+      const interval = 50
       const steps = duration / interval
-      let progress = 0
+      let currentProgress = 0
 
       const progressInterval = setInterval(() => {
-        progress += (100 / steps)
-        setImageProgress(Math.min(progress, 100))
+        currentProgress += (100 / steps)
+        updateDemoState({ progress: Math.min(currentProgress, 100) })
       }, interval)
 
       await new Promise(resolve => setTimeout(resolve, duration))
       clearInterval(progressInterval)
+
+      // Add demo-specific completion logic
+      if (item.demo.type === "chat") {
+        updateDemoState({
+          messages: [
+            ...messages,
+            { role: "assistant", content: item.demo.output }
+          ]
+        })
+      }
     } catch (error) {
-      console.error('Image generation failed:', error)
+      console.error('Generation failed:', error)
     } finally {
-      setIsGenerating(false)
-      setImageProgress(100)
-    }
-  }
-
-  // Add chat generation handler
-  const handleChatGeneration = async () => {
-    if (isGenerating) return
-    
-    setIsGenerating(true)
-    setIsPlaying(true)
-
-    try {
-      // Simulate chat generation progress
-      const duration = 5000 // 5 seconds
-      const interval = 50 // Update every 50ms
-      const steps = duration / interval
-      let progress = 0
-
-      const progressInterval = setInterval(() => {
-        progress += (100 / steps)
-        setImageProgress(Math.min(progress, 100))
-      }, interval)
-
-      await new Promise(resolve => setTimeout(resolve, duration))
-      clearInterval(progressInterval)
-    } catch (error) {
-      console.error('Chat generation failed:', error)
-    } finally {
-      setIsGenerating(false)
-      setImageProgress(100)
-    }
-  }
-
-  // Update renderOutput to handle different types independently
-  const renderOutput = () => {
-    switch (item.demo.type) {
-      case "code":
-        // Keep existing Code Generation as is
-        return (
-          <div className="space-y-3">
-            {/* Existing Code Generation UI */}
-            <AnimatedCode
-              code={item.demo.output}
-              isPlaying={isPlaying}
-              language={item.demo.language}
-            />
-            <div className="flex flex-col sm:flex-row gap-2">
-              <motion.button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handlePlayPause()
-                }}
-                className={cn(
-                  "flex items-center justify-center gap-2",
-                  "px-3 py-1.5 rounded-lg",
-                  "bg-primary/90 text-primary-foreground",
-                  "text-xs font-medium"
-                )}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                {isPlaying ? (
-                  <>
-                    <Pause className="w-3.5 h-3.5" />
-                    <span>Pause</span>
-                  </>
-                ) : (
-                  <>
-                    <Play className="w-3.5 h-3.5" />
-                    <span>Generate Code</span>
-                  </>
-                )}
-              </motion.button>
-              {/* Copy button */}
-            </div>
-          </div>
-        )
-
-      case "image":
-        return (
-          <div className="space-y-3">
-            {/* Image Generation UI */}
-            <div className="relative rounded-lg overflow-hidden border border-border/50">
-              <div className="flex items-center justify-between px-3 py-1.5 bg-secondary/30 border-b border-border/50">
-                <div className="flex items-center gap-2">
-                  <ImageIcon className="w-4 h-4 text-primary" />
-                  <span className="text-xs font-medium">Image Generation</span>
-                </div>
-                {item.demo.variations?.length > 0 && (
-                  <span className="text-xs text-muted-foreground">
-                    Style {currentVariation + 1}/{item.demo.variations.length}
-                  </span>
-                )}
-              </div>
-
-              <div className="relative aspect-video">
-                {isGenerating ? (
-                  <div className="absolute inset-0 flex items-center justify-center bg-secondary/30">
-                    <div className="space-y-4 text-center">
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                      >
-                        <Sparkles className="w-8 h-8 text-primary" />
-                      </motion.div>
-                      <div className="space-y-2">
-                        <p className="text-sm font-medium">Generating Image...</p>
-                        <div className="w-48 h-1 bg-secondary rounded-full overflow-hidden">
-                          <motion.div
-                            className="h-full bg-primary"
-                            style={{ width: `${imageProgress}%` }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <Image
-                    src={item.demo.variations?.[currentVariation] || item.demo.output}
-                    alt="Generated Image"
-                    fill
-                    className="object-cover"
-                  />
-                )}
-              </div>
-            </div>
-
-            {/* Image Controls */}
-            <div className="flex flex-wrap gap-2">
-              <motion.button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleImageGeneration()
-                }}
-                className={cn(
-                  "flex items-center gap-2 px-3 py-1.5 rounded-lg",
-                  "bg-primary/90 text-primary-foreground text-xs font-medium"
-                )}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                disabled={isGenerating}
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Generate Image</span>
-              </motion.button>
-
-              {item.demo.variations?.length > 0 && (
-                <motion.button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleNextVariation(e)
-                  }}
-                  className={cn(
-                    "flex items-center gap-2 px-3 py-1.5 rounded-lg",
-                    "bg-secondary text-foreground text-xs font-medium"
-                  )}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <RefreshCw className="w-3.5 h-3.5" />
-                  <span>Try Different Style</span>
-                </motion.button>
-              )}
-
-              <motion.button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  // Add download functionality
-                }}
-                className={cn(
-                  "flex items-center gap-2 px-3 py-1.5 rounded-lg",
-                  "bg-secondary text-foreground text-xs font-medium"
-                )}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Download className="w-3.5 h-3.5" />
-                <span>Download</span>
-              </motion.button>
-            </div>
-          </div>
-        )
-
-      case "chat":
-        return (
-          <div className="space-y-3">
-            {/* Chat Interface */}
-            <div className="rounded-lg border border-border/50 overflow-hidden">
-              <div className="flex items-center px-3 py-1.5 bg-secondary/30 border-b border-border/50">
-                <div className="flex items-center gap-2">
-                  <MessageSquare className="w-4 h-4 text-primary" />
-                  <span className="text-xs font-medium">AI Chat</span>
-                </div>
-              </div>
-
-              <div className="p-3 space-y-3 max-h-[300px] overflow-y-auto">
-                {messages.map((msg, idx) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, x: msg.role === "user" ? 20 : -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className={cn(
-                      "flex items-start gap-2 max-w-[80%] p-2 rounded-lg",
-                      msg.role === "user" 
-                        ? "ml-auto bg-primary/10" 
-                        : "bg-secondary/30"
-                    )}
-                  >
-                    {msg.role === "assistant" ? (
-                      <Sparkles className="w-4 h-4 mt-1 text-primary" />
-                    ) : (
-                      <User className="w-4 h-4 mt-1" />
-                    )}
-                    <p className="text-sm">{msg.content}</p>
-                  </motion.div>
-                ))}
-
-                {isGenerating && (
-                  <div className="flex items-center gap-2 text-primary">
-                    <motion.div
-                      animate={{ opacity: [0.5, 1, 0.5] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                    >
-                      <Sparkles className="w-4 h-4" />
-                    </motion.div>
-                    <span className="text-xs">AI is thinking...</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Chat Controls */}
-            <motion.button
-              onClick={(e) => {
-                e.stopPropagation()
-                handleChatGeneration()
-              }}
-              className={cn(
-                "flex items-center gap-2 px-3 py-1.5 rounded-lg",
-                "bg-primary/90 text-primary-foreground text-xs font-medium"
-              )}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              disabled={isGenerating}
-            >
-              <MessageSquare className="w-3.5 h-3.5" />
-              <span>Continue Chat</span>
-            </motion.button>
-          </div>
-        )
-
-      default:
-        return null
+      updateDemoState({ 
+        isGenerating: false,
+        progress: 100
+      })
     }
   }
 
   return (
     <motion.div
-      ref={cardRef}
       variants={cardVariants}
       initial="initial"
-      animate="animate"
+      whileInView="animate"
       whileHover="hover"
       whileTap="tap"
+      viewport={{ once: true }}
       className={cn(
-        "relative w-full max-w-[calc(100vw-2rem)] mx-auto",
-        "rounded-xl border overflow-hidden",
-        "bg-background/95 backdrop-blur-none",
+        "relative overflow-hidden rounded-xl border border-border/50",
+        "bg-gradient-to-b from-background via-background/95 to-background/90",
+        "shadow-lg hover:shadow-xl",
         "transition-all duration-300",
-        isActive 
-          ? "border-primary/50 ring-1 ring-primary/50" 
-          : "border-border hover:border-primary/30",
-        "sm:rounded-2xl"
+        "hover:border-primary/20" // Added for better hover effect
       )}
-      onClick={onClick}
-      layout
     >
-      {/* Card Header - Mobile Optimized */}
-      <div className="p-3 sm:p-4 md:p-6 space-y-3">
-        <div className="flex items-center gap-3">
-          <motion.div
-            className={cn(
-              "p-2 rounded-lg shrink-0",
-              "shadow-sm transition-colors",
-              isActive 
-                ? "bg-primary/10 text-primary" 
-                : "bg-secondary/80 text-foreground"
-            )}
-            whileHover={{ scale: 1.05 }}
-          >
-            <item.icon className="w-4 h-4 sm:w-5 sm:h-5" />
-          </motion.div>
-          
-          <div className="min-w-0 flex-1">
-            <h3 className="text-base sm:text-lg font-semibold truncate">
-              {item.title}
-            </h3>
-            <p className="text-xs sm:text-sm text-muted-foreground line-clamp-1">
-              {item.description}
-            </p>
+      {/* Card Header - Enhanced */}
+      <div className="p-6 pb-3">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className={cn(
+              "p-2.5 rounded-lg",
+              "bg-gradient-to-br",
+              item.gradient,
+              "shadow-sm"
+            )}>
+              <item.icon className="w-5 h-5" />
+            </div>
+            <h3 className="font-semibold tracking-tight">{item.title}</h3>
           </div>
         </div>
+        <p className="text-sm text-muted-foreground/90">{item.description}</p>
+      </div>
 
-        {/* Features Tags - Horizontal Scrollable */}
-        <div className="flex -mx-3 sm:mx-0 px-3 sm:px-0 overflow-x-auto pb-2 sm:pb-0 sm:flex-wrap gap-1.5 sm:gap-2">
-          {item.demo.features.map((feature, idx) => (
-            <span 
-              key={idx}
-              className={cn(
-                "shrink-0 px-2 py-1 rounded-md text-xs",
-                "bg-secondary/50 text-muted-foreground",
-                "whitespace-nowrap"
-              )}
-            >
-              {feature}
-            </span>
-          ))}
+      {/* Demo Content - Enhanced */}
+      <div className="p-6 pt-3">
+        {item.demo.type === "code" && (
+          <AnimatedCode
+            code={item.demo.output}
+            isPlaying={isPlaying}
+            language={item.demo.language}
+            progress={progress}
+          />
+        )}
+
+        {item.demo.type === "image" && (
+          <ImageGenerationDemo
+            image={item.demo.output}
+            variations={item.demo.variations}
+            isGenerating={isGenerating}
+            progress={progress}
+            onGenerate={handleGeneration}
+          />
+        )}
+
+        {item.demo.type === "chat" && (
+          <ChatCompletionDemo
+            messages={messages || []}
+            isGenerating={isGenerating}
+            onSendMessage={(message) => {
+              updateDemoState({
+                messages: [...(messages || []), { role: "user", content: message }]
+              })
+              handleGeneration()
+            }}
+          />
+        )}
+
+        {/* Generation Controls - Enhanced */}
+        <div className="mt-4 flex flex-wrap gap-2">
+          <motion.button
+            onClick={handleGeneration}
+            className={cn(
+              "flex items-center justify-center gap-2",
+              "px-4 py-2.5 rounded-lg",
+              "bg-primary/90 hover:bg-primary text-primary-foreground",
+              "text-sm font-medium",
+              "shadow-sm hover:shadow-md",
+              "transition-all duration-200",
+              "disabled:opacity-50 disabled:hover:bg-primary/90 disabled:shadow-none"
+            )}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            disabled={isGenerating}
+          >
+            {isGenerating ? (
+              <>
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                >
+                  <RefreshCw className="w-4 h-4" />
+                </motion.div>
+                <span>Generating...</span>
+              </>
+            ) : (
+              <>
+                <Wand2 className="w-4 h-4" />
+                <span>Generate {item.title}</span>
+              </>
+            )}
+          </motion.button>
+
+          {/* Add type-specific controls */}
         </div>
       </div>
 
-      {/* Demo Content - Better Mobile Layout */}
-      <AnimatePresence mode="wait">
-        {isActive && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="border-t border-border/50"
-          >
-            {/* Input Section */}
-            <div className="p-3 sm:p-4 md:p-6 space-y-3">
-              <div className="space-y-2">
-                <label className="text-xs sm:text-sm font-medium flex items-center gap-2">
-                  <Wand2 className="w-3.5 h-3.5 text-primary" />
-                  Input Prompt
-                </label>
-                <div className="p-2.5 rounded-lg bg-secondary/30 text-xs sm:text-sm">
-                  {item.demo.input}
-                </div>
-              </div>
-
-              {/* Output Section */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs sm:text-sm font-medium flex items-center gap-2">
-                    <Sparkles className="w-3.5 h-3.5 text-primary" />
-                    AI Output
-                  </label>
-                  
-                  {/* Generation Progress */}
-                  {isGenerating && (
-                    <span className="text-xs text-primary animate-pulse">
-                      {steps[generationStep]?.label}
-                    </span>
-                  )}
-                </div>
-
-                {/* Code Display */}
-                <div className="rounded-lg border border-border/50 overflow-hidden">
-                  <div className="flex items-center justify-between px-3 py-1.5 bg-secondary/30 border-b border-border/50">
-                    <div className="flex items-center gap-2">
-                      <div className="flex gap-1">
-                        <div className="w-2.5 h-2.5 rounded-full bg-red-500/20" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-green-500/20" />
-                      </div>
-                      <span className="text-[10px] font-medium">Code Output</span>
-                    </div>
-                  </div>
-
-                  <div className="relative">
-                    <pre className="p-3 overflow-x-auto text-xs">
-                      <code className="block whitespace-pre-wrap font-mono">
-                        {displayedCode}
-                        {isPlaying && (
-                          <motion.span
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: [0, 1, 0] }}
-                            transition={{ duration: 0.8, repeat: Infinity }}
-                            className="inline-block w-1.5 h-4 bg-primary/50 ml-0.5 align-middle"
-                          />
-                        )}
-                      </code>
-                    </pre>
-                    
-                    {isGenerating && (
-                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary/10">
-                        <motion.div
-                          className="h-full bg-primary"
-                          animate={{ width: ["0%", "100%"] }}
-                          transition={{ duration: 2, repeat: Infinity }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Control Buttons */}
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <motion.button
-                    onClick={(e) => {
-                      e.stopPropagation() // Prevent card click
-                      handlePlayPause()
-                    }}
-                    className={cn(
-                      "flex items-center justify-center gap-2",
-                      "px-3 py-1.5 rounded-lg",
-                      "bg-primary/90 text-primary-foreground",
-                      "text-xs font-medium",
-                      "disabled:opacity-50",
-                      "hover:bg-primary/80 transition-colors"
-                    )}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    disabled={isGenerating}
-                  >
-                    {isPlaying ? (
-                      <>
-                        <Pause className="w-3.5 h-3.5" />
-                        <span>Pause</span>
-                      </>
-                    ) : (
-                      <>
-                        <Play className="w-3.5 h-3.5" />
-                        <span>Generate Code</span>
-                      </>
-                    )}
-                  </motion.button>
-
-                  <motion.button
-                    onClick={() => handleCopy(item.demo.output)}
-                    className={cn(
-                      "flex items-center justify-center gap-2",
-                      "px-3 py-1.5 rounded-lg",
-                      "bg-secondary text-foreground",
-                      "text-xs font-medium",
-                      "border border-border/50"
-                    )}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    {copied ? (
-                      <>
-                        <Check className="w-3.5 h-3.5" />
-                        <span>Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3.5 h-3.5" />
-                        <span>Copy Code</span>
-                      </>
-                    )}
-                  </motion.button>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Generation Progress - Enhanced */}
+      {isGenerating && (
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 h-1"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <div className="h-full bg-primary/10">
+            <motion.div
+              className="h-full bg-primary/60"
+              initial={{ width: "0%" }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.1 }}
+            />
+          </div>
+        </motion.div>
+      )}
     </motion.div>
   )
 }
 
 export function AIShowcase() {
-  const [activeDemo, setActiveDemo] = useState(0)
   const containerRef = useRef(null)
   
   const { scrollYProgress } = useScroll({
@@ -1020,6 +702,31 @@ export function AIShowcase() {
 
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0])
   const scale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.8, 1, 1, 0.8])
+
+  // Add state for tracking generation states of all demos
+  const [demoStates, setDemoStates] = useState(
+    showcaseItems.reduce((acc, _, index) => ({
+      ...acc,
+      [index]: {
+        isGenerating: false,
+        isPlaying: false,
+        progress: 0,
+        currentVariation: 0,
+        messages: []
+      }
+    }), {})
+  )
+
+  // Update demo state handler
+  const updateDemoState = (index, updates) => {
+    setDemoStates(prev => ({
+      ...prev,
+      [index]: {
+        ...prev[index],
+        ...updates
+      }
+    }))
+  }
 
   return (
     <section
@@ -1059,8 +766,8 @@ export function AIShowcase() {
             <DemoCard
               key={index}
               item={item}
-              isActive={activeDemo === index}
-              onClick={() => setActiveDemo(index)}
+              demoState={demoStates[index]}
+              updateDemoState={(updates) => updateDemoState(index, updates)}
             />
           ))}
         </div>

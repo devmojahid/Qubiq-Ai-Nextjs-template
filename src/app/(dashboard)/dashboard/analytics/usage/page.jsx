@@ -459,6 +459,41 @@ export default function UsageAnalyticsPage() {
           </div>
         </div>
       </motion.div>
+
+      {/* Credits Usage Card */}
+      <motion.div
+        whileHover={{ scale: 1.02 }}
+        className="p-6 rounded-xl border bg-card space-y-4"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-blue-500/10">
+              <CreditCard className="h-4 w-4 text-blue-500" />
+            </div>
+            <span className="font-medium">Credits Usage</span>
+          </div>
+          <div className={cn(
+            "flex items-center gap-1 text-sm",
+            usageMetrics.successRate.trend > 0 ? "text-green-500" : "text-red-500"
+          )}>
+            {usageMetrics.successRate.trend > 0 ? (
+              <TrendingUp className="h-4 w-4" />
+            ) : (
+              <TrendingDown className="h-4 w-4" />
+            )}
+            {Math.abs(usageMetrics.successRate.trend)}%
+          </div>
+        </div>
+
+        <div className="space-y-1">
+          <div className="text-2xl font-bold">
+            ${usageMetrics.totalCredits.used.toLocaleString()}
+          </div>
+          <div className="text-sm text-muted-foreground">
+            Total credits used
+          </div>
+        </div>
+      </motion.div>
     </>
   )
 

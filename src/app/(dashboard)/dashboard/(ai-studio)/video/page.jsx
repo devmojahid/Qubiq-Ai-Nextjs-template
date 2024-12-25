@@ -68,10 +68,10 @@ export default function VideoGenerationPage() {
       setTimeout(() => {
         const newVideo = {
           id: Date.now(),
-          url: "https://example.com/sample-video.mp4",
+          url: "/files/videos/ai.mp4",
           prompt,
           settings,
-          thumbnail: "https://source.unsplash.com/random/1920x1080",
+          thumbnail: "/images/videos/ai.jpg",
           duration: settings.duration,
           timestamp: new Date().toISOString()
         }
