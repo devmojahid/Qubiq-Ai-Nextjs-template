@@ -16,7 +16,7 @@ export function WebsiteInput({
   onPromptChange, 
   isGenerating, 
   onGenerate,
-  assets,
+  assets = { images: [], content: null },
   onAssetsChange,
   settings 
 }) {
@@ -45,15 +45,19 @@ export function WebsiteInput({
   }
 
   const handleFiles = (files) => {
-    const newAssets = { ...assets }
+    const newAssets = { 
+      images: [...(assets?.images || [])],
+      content: assets?.content || null
+    }
+
     Array.from(files).forEach(file => {
       if (file.type.startsWith('image/')) {
-        newAssets.images = [...(newAssets.images || []), {
+        newAssets.images.push({
           id: Date.now(),
           file,
           preview: URL.createObjectURL(file),
           name: file.name
-        }]
+        })
       } else if (file.type === 'application/json') {
         const reader = new FileReader()
         reader.onload = (e) => {
@@ -168,76 +172,29 @@ export function WebsiteInput({
       <AnimatePresence>
         {showAssets && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="space-y-4"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
           >
-            {/* Drag & Drop Zone */}
-            <div
-              onDragEnter={handleDrag}
-              onDragLeave={handleDrag}
-              onDragOver={handleDrag}
-              onDrop={handleDrop}
-              className={cn(
-                "relative rounded-lg border-2 border-dashed p-8",
-                "flex flex-col items-center justify-center gap-2",
-                "transition-colors duration-200",
-                dragActive
-                  ? "border-primary bg-primary/5"
-                  : "border-secondary hover:border-primary/50 hover:bg-secondary/50"
-              )}
-            >
-              <div className="rounded-full bg-secondary/80 p-3">
-                <Upload className="h-6 w-6 text-primary" />
-              </div>
-              <div className="text-center">
-                <p className="text-sm font-medium">
-                  Drop your assets here
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Support images, logos, and content files
-                </p>
-              </div>
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className={cn(
-                  "rounded-lg px-4 py-2",
-                  "bg-secondary/80 text-sm",
-                  "hover:bg-secondary transition-colors"
-                )}
-              >
-                Choose Files
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                multiple
-                accept="image/*,application/json"
-                onChange={(e) => handleFiles(e.target.files)}
-                className="hidden"
-              />
-            </div>
-
-            {/* Assets Preview */}
-            <div className="space-y-3">
+            <div className="space-y-4 pt-4">
               {/* Images */}
-              {assets.images?.length > 0 && (
+              {assets?.images?.length > 0 && (
                 <div className="space-y-2">
                   <label className="text-sm font-medium flex items-center gap-2">
-                    <FileImage className="h-4 w-4 text-primary" />
+                    <ImageIcon className="h-4 w-4 text-primary" />
                     Images
                   </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                     {assets.images.map((image) => (
                       <div
                         key={image.id}
-                        className="group relative aspect-square rounded-lg overflow-hidden"
+                        className="relative aspect-video rounded-lg overflow-hidden group"
                       >
                         <img
                           src={image.preview}
                           alt={image.name}
-                          className="h-full w-full object-cover"
+                          className="w-full h-full object-cover"
                         />
                         <div className={cn(
                           "absolute inset-0 flex items-center justify-center",
@@ -263,7 +220,7 @@ export function WebsiteInput({
               )}
 
               {/* Content */}
-              {assets.content && (
+              {assets?.content && (
                 <div className="space-y-2">
                   <label className="text-sm font-medium flex items-center gap-2">
                     <FileText className="h-4 w-4 text-primary" />
@@ -323,6 +280,36 @@ export function WebsiteInput({
             </>
           )}
         </motion.button>
+      </div>
+    </div>
+  )
+}
+
+function MobilePromptInput({ prompt, onPromptChange, isGenerating, onGenerate }) {
+  return (
+    <div className="fixed bottom-0 inset-x-0 p-4 bg-background border-t lg:hidden">
+      <div className="flex gap-2">
+        <textarea
+          value={prompt}
+          onChange={(e) => onPromptChange(e.target.value)}
+          placeholder="Describe your website..."
+          className="flex-1 min-h-[44px] max-h-[120px] rounded-xl bg-secondary/50 p-3 text-sm resize-none"
+        />
+        <button
+          onClick={onGenerate}
+          disabled={isGenerating || !prompt.trim()}
+          className={cn(
+            "flex items-center justify-center rounded-xl px-4",
+            "bg-primary text-primary-foreground",
+            "disabled:opacity-50"
+          )}
+        >
+          {isGenerating ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Wand2 className="h-4 w-4" />
+          )}
+        </button>
       </div>
     </div>
   )

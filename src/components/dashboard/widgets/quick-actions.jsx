@@ -11,37 +11,43 @@ import {
   Clock,
   Folder
 } from "lucide-react"
+import Link from "next/link"
 
 const actions = [
   {
     name: "Text Generation",
     icon: FileText,
     color: "bg-blue-500/10 text-blue-500",
-    description: "Generate blog posts, articles & more"
+    description: "Generate blog posts, articles & more",
+    href: "/dashboard/text"
   },
   {
     name: "Image Creation",
     icon: ImageIcon,
     color: "bg-green-500/10 text-green-500",
-    description: "Create stunning AI-powered images"
+    description: "Create stunning AI-powered images",
+    href: "/dashboard/image"
   },
   {
     name: "Chat Assistant",
     icon: MessageSquare,
     color: "bg-purple-500/10 text-purple-500",
-    description: "Interactive AI chat assistance"
+    description: "Interactive AI chat assistance",
+    href: "/dashboard/chat"
   },
   {
     name: "Audio Processing",
     icon: Music,
     color: "bg-orange-500/10 text-orange-500",
-    description: "Convert speech to text & more"
+    description: "Convert speech to text & more",
+    href: "/dashboard/audio"
   },
   {
     name: "Video Generation",
     icon: Video,
     color: "bg-pink-500/10 text-pink-500",
-    description: "Create AI-powered video content"
+    description: "Create AI-powered video content",
+    href: "/dashboard/video"
   }
 ]
 
@@ -88,21 +94,25 @@ export function QuickActions() {
 
         <div className="mt-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {actions.map((action) => (
-            <motion.button
+            <Link 
               key={action.name}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="group relative rounded-lg border p-4 hover:shadow-md transition-all duration-200"
+              href={action.href}
+              className="group relative rounded-lg border p-4 hover:shadow-md transition-all duration-200 w-full block"
             >
-              <div className={`rounded-lg p-2.5 w-fit ${action.color}`}>
-                <action.icon className="h-5 w-5" />
-              </div>
-              <h4 className="mt-4 font-medium">{action.name}</h4>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {action.description}
-              </p>
-              <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary/0 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </motion.button>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className={`rounded-lg p-2.5 w-fit ${action.color}`}>
+                  <action.icon className="h-5 w-5" />
+                </div>
+                <h4 className="mt-4 font-medium">{action.name}</h4>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {action.description}
+                </p>
+                <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary/0 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </motion.div>
+            </Link>
           ))}
         </div>
       </motion.div>

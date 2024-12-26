@@ -7,7 +7,8 @@ import {
   Settings, Monitor, Sparkles, Zap,
   FileCode, Chrome, Blocks, Box,
   Braces, Cpu, Paintbrush, Eye,
-  Search, Share2, Database, Lock
+  Search, Share2, Database, Lock,
+  X
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -319,5 +320,28 @@ export function WebsiteSettings({ settings, onSettingsChange, isVisible }) {
         </motion.div>
       )}
     </AnimatePresence>
+  )
+}
+
+function MobileSettingsPanel({ settings, onSettingsChange, onClose }) {
+  return (
+    <motion.div
+      initial={{ y: "100%" }}
+      animate={{ y: 0 }}
+      exit={{ y: "100%" }}
+      className="fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-background border-t"
+      style={{ maxHeight: "80vh" }}
+    >
+      <div className="flex items-center justify-between p-4 border-b">
+        <h3 className="font-semibold">Website Settings</h3>
+        <button onClick={onClose}>
+          <X className="h-5 w-5" />
+        </button>
+      </div>
+      
+      <div className="p-4 overflow-y-auto">
+        {/* Existing settings content */}
+      </div>
+    </motion.div>
   )
 } 

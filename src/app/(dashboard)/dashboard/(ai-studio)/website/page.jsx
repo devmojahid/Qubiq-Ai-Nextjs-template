@@ -63,6 +63,7 @@ export default function WebsiteGenerationPage() {
   const [selectedWebsite, setSelectedWebsite] = useState(null)
   const [previewDevice, setPreviewDevice] = useState("desktop")
   const [pathError, setPathError] = useState(false)
+  const [viewMode, setViewMode] = useState('desktop')
 
   // Enhanced window resize handler
   useEffect(() => {
@@ -105,26 +106,79 @@ export default function WebsiteGenerationPage() {
     setPathError(false);
 
     try {
-      // Validate paths before generation
-      if (!isValidPath(prompt)) {
-        throw new Error('Invalid path specified');
-      }
-
-      // Simulate API call with better error handling
+      // Simulate API call with generated code
       setTimeout(() => {
+        const generatedCode = {
+          html: `
+            <div class="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
+              <header class="py-6 px-4">
+                <nav class="max-w-7xl mx-auto flex items-center justify-between">
+                  <h1 class="text-2xl font-bold text-purple-600">Generated Site</h1>
+                  <div class="flex gap-4">
+                    <a href="#" class="text-gray-600 hover:text-purple-600">Home</a>
+                    <a href="#" class="text-gray-600 hover:text-purple-600">About</a>
+                    <a href="#" class="text-gray-600 hover:text-purple-600">Contact</a>
+                  </div>
+                </nav>
+              </header>
+              <main class="max-w-7xl mx-auto px-4 py-12">
+                <h2 class="text-4xl font-bold text-center mb-8">Welcome to Your Website</h2>
+                <p class="text-center text-gray-600 max-w-2xl mx-auto">
+                  This is a generated website based on your description. You can customize it further.
+                </p>
+              </main>
+            </div>
+          `,
+          css: `
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { font-family: system-ui, sans-serif; }
+            .min-h-screen { min-height: 100vh; }
+            .max-w-7xl { max-width: 80rem; }
+            .mx-auto { margin-left: auto; margin-right: auto; }
+            .flex { display: flex; }
+            .items-center { align-items: center; }
+            .justify-between { justify-content: space-between; }
+            .gap-4 { gap: 1rem; }
+            .px-4 { padding-left: 1rem; padding-right: 1rem; }
+            .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+            .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+            .text-2xl { font-size: 1.5rem; }
+            .text-4xl { font-size: 2.25rem; }
+            .font-bold { font-weight: 700; }
+            .text-center { text-align: center; }
+            .mb-8 { margin-bottom: 2rem; }
+            .text-purple-600 { color: rgb(147 51 234); }
+            .text-gray-600 { color: rgb(75 85 99); }
+            .hover\\:text-purple-600:hover { color: rgb(147 51 234); }
+            .bg-gradient-to-br { background-image: linear-gradient(to bottom right, var(--tw-gradient-stops)); }
+            .from-purple-50 { --tw-gradient-from: rgb(250 245 255); }
+            .to-blue-50 { --tw-gradient-to: rgb(239 246 255); }
+          `,
+          js: `
+            document.addEventListener('DOMContentLoaded', function() {
+              console.log('Website loaded successfully!');
+            });
+          `
+        };
+
         const newWebsite = {
           id: Date.now(),
           prompt,
           settings,
-          preview: "https://source.unsplash.com/random/1920x1080?website",
+          code: generatedCode,
+          preview: {
+            desktop: "https://source.unsplash.com/random/1920x1080?website",
+            tablet: "https://source.unsplash.com/random/768x1024?website",
+            mobile: "https://source.unsplash.com/random/375x812?website"
+          },
           timestamp: new Date().toISOString(),
-          path: prompt.toLowerCase().replace(/\s+/g, '-'),
           status: 'completed'
         };
 
         setGeneratedWebsites(prev => [newWebsite, ...prev]);
+        setSelectedWebsite(newWebsite);
         setIsGenerating(false);
-      }, 5000);
+      }, 2000);
     } catch (error) {
       console.error('Generation error:', error);
       setIsGenerating(false);
@@ -165,6 +219,11 @@ export default function WebsiteGenerationPage() {
       console.error('Error selecting website:', error);
     }
   };
+
+  // Add the handler function
+  const handleViewModeChange = (mode) => {
+    setViewMode(mode)
+  }
 
   return (
     <div className="w-full min-h-screen bg-background overflow-x-hidden">
@@ -213,7 +272,7 @@ export default function WebsiteGenerationPage() {
                 <motion.span
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center"
+                  className=""
                 >
                   <ChevronDown 
                     className={cn(
@@ -307,10 +366,9 @@ export default function WebsiteGenerationPage() {
                       isGenerating={isGenerating}
                       selectedWebsite={selectedWebsite}
                       onSelectWebsite={setSelectedWebsite}
-                      previewDevice={previewDevice}
-                      onDeviceChange={handleDeviceChange}
+                      viewMode={viewMode}
+                      onViewModeChange={handleViewModeChange}
                       settings={settings}
-                      isMobile={isMobileView}
                     />
                   )}
                 </AnimatePresence>
