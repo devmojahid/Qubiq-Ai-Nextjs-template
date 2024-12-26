@@ -10,7 +10,8 @@ import {
   Clock, Trophy, Handshake, Play, MapPin,
   Newspaper, BookOpen, GraduationCap, 
   Building, Phone, Mail, Calendar,
-  CheckCircle2, ArrowUpRight, Github
+  CheckCircle2, ArrowUpRight, Github,
+  Twitter, Linkedin
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -58,36 +59,48 @@ const team = [
     name: "Sarah Johnson",
     role: "CEO & Co-founder",
     image: "/images/team/sarah.jpg",
+    bio: "Visionary leader with 15+ years of experience in AI and machine learning.",
+    skills: ["AI Strategy", "Leadership", "Innovation"],
     social: {
       twitter: "https://twitter.com/sarahjohnson",
-      linkedin: "https://www.linkedin.com/in/sarahjohnson"
+      linkedin: "https://www.linkedin.com/in/sarahjohnson",
+      github: "https://github.com/sarahjohnson"
     }
   },
   {
     name: "Michael Chen",
     role: "CTO & Co-founder",
     image: "/images/team/michael.jpg",
+    bio: "Tech innovator specializing in scalable AI solutions and cloud architecture.",
+    skills: ["AI Development", "Cloud Architecture", "Team Leadership"],
     social: {
       twitter: "https://twitter.com/michaelchen",
-      linkedin: "https://www.linkedin.com/in/michaelchen"
+      linkedin: "https://www.linkedin.com/in/michaelchen",
+      github: "https://github.com/michaelchen"
     }
   },
   {
     name: "Emily White",
     role: "Product Manager",
     image: "/images/team/emma.jpg",
+    bio: "Product strategist focused on creating intuitive AI-powered experiences.",
+    skills: ["Product Strategy", "UX Design", "Agile"],
     social: {
       twitter: "https://twitter.com/emilywhite",
-      linkedin: "https://www.linkedin.com/in/emilywhite"
+      linkedin: "https://www.linkedin.com/in/emilywhite",
+      github: "https://github.com/emilywhite"
     }
   },
   {
     name: "David Lee",
     role: "Marketing Manager",
     image: "/images/team/david.jpg",
+    bio: "Marketing expert specializing in AI product launches and brand strategy.",
+    skills: ["Digital Marketing", "Brand Strategy", "Growth"],
     social: {
       twitter: "https://twitter.com/davidlee",
-      linkedin: "https://www.linkedin.com/in/davidlee"
+      linkedin: "https://www.linkedin.com/in/davidlee",
+      github: "https://github.com/davidlee"
     }
   }
 ]
@@ -171,24 +184,107 @@ function TeamMember({ member, index }) {
       transition={{ delay: index * 0.1 }}
       className="relative group"
     >
+      <motion.div
+        className={cn(
+          "absolute -inset-px rounded-2xl opacity-0",
+          "bg-gradient-to-r from-primary/20 via-transparent to-primary/20",
+          "group-hover:opacity-100 transition-opacity duration-300"
+        )}
+      />
       <div className={cn(
         "relative rounded-2xl border overflow-hidden",
         "bg-background/50 hover:bg-background/80",
         "transition-all duration-300"
       )}>
-        <div className="relative aspect-square">
+        <div className="relative aspect-square overflow-hidden">
           <Image
             src={member.image}
             alt={member.name}
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
+          <motion.div 
+            className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent opacity-60 group-hover:opacity-90"
+            initial={{ opacity: 0.6 }}
+            whileHover={{ opacity: 0.9 }}
+            transition={{ duration: 0.3 }}
+          />
+          
+          {/* Social Links Overlay */}
+          <motion.div 
+            className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            initial={{ y: 20 }}
+            whileHover={{ y: 0 }}
+          >
+            {member.social && Object.entries(member.social).map(([platform, url]) => (
+              <motion.a
+                key={platform}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-full bg-background/80 text-foreground hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {platform === 'twitter' && <Twitter className="w-5 h-5" />}
+                {platform === 'linkedin' && <Linkedin className="w-5 h-5" />}
+                {platform === 'github' && <Github className="w-5 h-5" />}
+              </motion.a>
+            ))}
+          </motion.div>
         </div>
-        <div className="p-6">
-          <h3 className="text-lg font-semibold">{member.name}</h3>
-          <p className="text-sm text-muted-foreground">{member.role}</p>
+
+        <div className="relative p-6 space-y-2">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <h3 className="text-xl font-semibold tracking-tight group-hover:text-primary transition-colors">
+              {member.name}
+            </h3>
+            <p className="text-sm text-muted-foreground">{member.role}</p>
+          </motion.div>
+
+          {member.bio && (
+            <motion.p 
+              className="text-sm text-muted-foreground line-clamp-2 group-hover:line-clamp-none transition-all duration-300"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              {member.bio}
+            </motion.p>
+          )}
+
+          {member.skills && (
+            <motion.div 
+              className="flex flex-wrap gap-2 pt-2"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              {member.skills.map((skill, idx) => (
+                <span 
+                  key={idx}
+                  className="px-2 py-1 text-xs rounded-full bg-primary/10 text-primary"
+                >
+                  {skill}
+                </span>
+              ))}
+            </motion.div>
+          )}
         </div>
+
+        <motion.div
+          className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          whileHover={{ scale: 1.1, rotate: 5 }}
+        >
+          <div className="p-2 rounded-full bg-background/80 backdrop-blur-sm">
+            <ArrowUpRight className="w-4 h-4 text-primary" />
+          </div>
+        </motion.div>
       </div>
     </motion.div>
   )
@@ -404,26 +500,25 @@ export default function About() {
             {[
               {
                 source: "TechCrunch",
-                title: "AI Platform Revolutionizes Content Creation",
-                date: "Dec 2023",
-                link: "#"
+                title: "AI Platform Revolutionizes Content",
+                description: "Our AI platform has transformed how content is created, enabling faster and more efficient production.",
+                date: "Dec 2023"
               },
               {
                 source: "Forbes",
                 title: "Top AI Startups to Watch in 2024",
-                date: "Jan 2024",
-                link: "#"
+                description: "Our AI platform has transformed how content is created, enabling faster and more efficient production.",
+                date: "Jan 2024"
               },
               {
                 source: "VentureBeat",
                 title: "The Future of AI Content Generation",
-                date: "Feb 2024",
-                link: "#"
+                description: "Our AI platform has transformed how content is created, enabling faster and more efficient production.",
+                date: "Feb 2024"
               }
             ].map((article, index) => (
-              <motion.a
+              <motion.div
                 key={index}
-                href={article.link}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 whileHover={{ scale: 1.02 }}
@@ -440,10 +535,10 @@ export default function About() {
                   className="mt-4 flex items-center gap-2 text-sm text-primary"
                   whileHover={{ x: 5 }}
                 >
-                  Read More
+                  {article.description}
                   <ArrowUpRight className="w-4 h-4" />
                 </motion.div>
-              </motion.a>
+              </motion.div>
             ))}
           </div>
         </div>

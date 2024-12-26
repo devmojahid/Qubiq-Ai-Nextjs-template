@@ -412,7 +412,7 @@ function MapSection() {
               </motion.div>
             </div>
             
-            <div className="lg:col-span-3 relative min-h-[400px] lg:min-h-[600px]">
+            <div className="lg:col-span-3 relative">
               {/* <Image
                 src="/images/map.jpg"
                 alt="Office Locations Map"

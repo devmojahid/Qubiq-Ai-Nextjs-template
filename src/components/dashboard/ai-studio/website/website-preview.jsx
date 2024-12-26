@@ -95,7 +95,7 @@ export function WebsitePreview({
       // Add files
       zip.file('index.html', `
         <!DOCTYPE html>
-        <html>
+        <html lang="en" suppressHydrationWarning>
           <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1">

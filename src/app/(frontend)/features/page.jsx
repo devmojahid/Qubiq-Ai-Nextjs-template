@@ -10,7 +10,7 @@ import {
   Users, Brain, Bot, Wand2, 
   MessageSquare, Image as ImageIcon,
   FileCode, Database, Cloud, Globe2,
-  Check
+  Check, ArrowUpRight
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -113,21 +113,42 @@ const technicalFeatures = [
 const useCases = [
   {
     title: "Content Creation",
-    description: "Generate blog posts, articles, and marketing copy",
+    description: "Generate blog posts, articles, and marketing copy with AI",
     icon: MessageSquare,
-    image: "/images/use-cases/content.jpg"
+    image: "/images/use-cases/content.jpg",
+    features: [
+      "AI-powered content generation",
+      "SEO optimization",
+      "Multi-language support",
+      "Brand voice customization"
+    ],
+    stats: "Used by 50k+ creators"
   },
   {
     title: "Development",
-    description: "Accelerate coding with AI assistance",
+    description: "Accelerate coding with intelligent AI assistance",
     icon: FileCode,
-    image: "/images/use-cases/development.jpg"
+    image: "/images/use-cases/development.jpg",
+    features: [
+      "Code completion",
+      "Bug detection",
+      "Code refactoring",
+      "Documentation generation"
+    ],
+    stats: "10M+ lines optimized"
   },
   {
     title: "Design",
-    description: "Create visuals and designs with AI",
+    description: "Create stunning visuals and designs with AI",
     icon: Wand2,
-    image: "/images/use-cases/design.jpg"
+    image: "/images/use-cases/design.jpg",
+    features: [
+      "Image generation",
+      "Style transfer",
+      "Layout suggestions",
+      "Brand consistency"
+    ],
+    stats: "1M+ designs created"
   }
 ]
 
@@ -250,32 +271,112 @@ function UseCaseCard({ useCase }) {
       viewport={{ once: true }}
       className="relative group"
     >
+      <motion.div
+        className={cn(
+          "absolute -inset-px rounded-2xl opacity-0",
+          "bg-gradient-to-r from-primary/20 via-transparent to-primary/20",
+          "group-hover:opacity-100 transition-opacity duration-300"
+        )}
+      />
       <div className={cn(
         "relative rounded-2xl border overflow-hidden",
         "bg-background/50 hover:bg-background/80",
-        "transition-all duration-300"
+        "transition-all duration-300 h-full"
       )}>
-        <div className="relative aspect-[4/3]">
+        {/* Image Container */}
+        <div className="relative aspect-[16/10] overflow-hidden">
           <Image
             src={useCase.image}
             alt={useCase.title}
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent" />
-          
-          <div className="absolute bottom-4 left-4 right-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-primary/10 backdrop-blur-sm text-primary">
-                <useCase.icon className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-white">{useCase.title}</h3>
-                <p className="text-white/80">{useCase.description}</p>
-              </div>
+          <motion.div 
+            className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent"
+            initial={{ opacity: 0.6 }}
+            whileHover={{ opacity: 0.8 }}
+            transition={{ duration: 0.3 }}
+          />
+        </div>
+
+        {/* Content Container */}
+        <div className="relative p-6">
+          {/* Icon and Title */}
+          <div className="flex items-start gap-4 mb-4">
+            <motion.div
+              className="p-3 rounded-xl bg-primary/10 text-primary backdrop-blur-sm"
+              whileHover={{ scale: 1.05, rotate: 5 }}
+            >
+              <useCase.icon className="w-6 h-6" />
+            </motion.div>
+            <div>
+              <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">
+                {useCase.title}
+              </h3>
+              <p className="text-muted-foreground mt-1">
+                {useCase.description}
+              </p>
             </div>
           </div>
+
+          {/* Features List */}
+          {useCase.features && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="space-y-3 mt-4"
+            >
+              {useCase.features.map((feature, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, x: -10 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="flex items-center gap-2 text-sm"
+                >
+                  <div className="p-1 rounded-full bg-primary/10 text-primary">
+                    <Check className="w-3 h-3" />
+                  </div>
+                  <span>{feature}</span>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+
+          {/* Learn More Link */}
+          <motion.div
+            className="mt-6 flex items-center justify-between"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <motion.button
+              className="inline-flex items-center gap-2 text-primary text-sm font-medium"
+              whileHover={{ x: 5 }}
+            >
+            {useCase.title.toLowerCase()}
+              <ArrowRight className="w-4 h-4" />
+            </motion.button>
+
+            {useCase.stats && (
+              <span className="text-sm text-muted-foreground">
+                {useCase.stats}
+              </span>
+            )}
+          </motion.div>
         </div>
+
+        {/* Hover Effect Overlay */}
+        <motion.div
+          className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          whileHover={{ scale: 1.1, rotate: 5 }}
+        >
+          <div className="p-2 rounded-full bg-background/80 backdrop-blur-sm">
+            <ArrowUpRight className="w-4 h-4 text-primary" />
+          </div>
+        </motion.div>
       </div>
     </motion.div>
   )
