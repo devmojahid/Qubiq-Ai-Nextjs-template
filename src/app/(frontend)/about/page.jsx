@@ -572,8 +572,8 @@ export default function About() {
 
               <div className="grid sm:grid-cols-2 gap-4 pt-4">
                 {[
-                  { label: "Research Papers", value: "50+" },
                   { label: "Patents Filed", value: "25+" },
+                  { label: "Research Papers", value: "50+" },
                   { label: "Open Source Projects", value: "100+" },
                   { label: "Research Partners", value: "30+" }
                 ].map((stat, index) => (
@@ -606,8 +606,8 @@ export default function About() {
 
             <div className="grid grid-cols-2 gap-6">
               {[
-                "AI Research Lab",
                 "Team Collaboration",
+                "AI Research Lab latest",
                 "Data Analysis",
                 "Innovation Hub"
               ].map((image, index) => (
