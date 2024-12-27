@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
-import { Logo } from "@/components/ui/logo"
+import { Logo } from "@/components/ui/logo-admin"
 import { cn } from "@/lib/utils"
 import {
   LayoutGrid, FileText, MessageSquare, Eye, Image as ImageIcon,
@@ -500,7 +500,7 @@ export function DashboardSidebar({ isOpen, setIsOpen, isMobile }) {
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-medium text-gray-500 dark:text-gray-400">CREDITS</span>
             <Link
-              href="dashboard/analytics/usage" 
+              href="/dashboard/analytics/usage" 
               className="text-xs text-purple-600 hover:text-purple-700 font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-purple-500/20 rounded-lg px-2 py-1 -mr-2"
             >
               View Details
@@ -540,13 +540,13 @@ export function DashboardSidebar({ isOpen, setIsOpen, isMobile }) {
 
       {/* Enhanced Logout Button */}
       <div className="p-4 bg-gradient-to-t from-gray-50 dark:from-gray-800 to-white dark:to-gray-900">
-        <button
-          onClick={() => console.log('Logout')}
+        <Link
+          href="/login"
           className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all duration-200 border border-transparent hover:border-red-100 dark:hover:border-red-800 hover:shadow-sm"
         >
           <LogOut className="h-4 w-4" />
           <span>Logout</span>
-        </button>
+        </Link>
       </div>
     </motion.aside>
   )

@@ -268,7 +268,7 @@ export default function PricingPage() {
               )}
             >
               {plan.popular && (
-                <div className="absolute -top-3 left-0 right-0 mx-auto w-fit">
+                <div className="absolute left-0 right-0 mx-auto w-fit top-[1px]">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
                     <Star className="h-3.5 w-3.5" />
                     Most Popular
@@ -389,7 +389,7 @@ export default function PricingPage() {
                     </div>
                   </th>
                   <th className="p-4 text-center min-w-[140px] bg-primary/5 relative">
-                    <div className="absolute -top-3 left-0 right-0 mx-auto w-fit">
+                    <div className="absolute top-[1px] left-0 right-0 mx-auto w-fit">
                       <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
                         <StarIcon className="h-3.5 w-3.5" />
                         Most Popular

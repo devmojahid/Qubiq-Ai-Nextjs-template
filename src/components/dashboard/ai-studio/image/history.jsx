@@ -13,7 +13,7 @@ const historyItems = [
   {
     id: 1,
     prompt: "A futuristic cityscape at sunset with flying cars",
-    preview: "https://source.unsplash.com/random/400x400?city,future",
+    preview: "/images/dashboard/generated-images/recent/4.jpg",
     style: "Digital Art",
     timestamp: "2024-02-15T10:30:00Z",
     settings: {
@@ -27,7 +27,7 @@ const historyItems = [
   {
     id: 2,
     prompt: "A magical forest with glowing mushrooms and fairies",
-    preview: "https://source.unsplash.com/random/400x400?forest,magic",
+    preview: "/images/dashboard/generated-images/recent/5.jpg",
     style: "Fantasy",
     timestamp: "2024-02-15T09:15:00Z",
     settings: {
@@ -41,7 +41,7 @@ const historyItems = [
   {
     id: 3,
     prompt: "Abstract fluid art in vibrant colors",
-    preview: "https://source.unsplash.com/random/400x400?abstract,art",
+    preview: "/images/dashboard/generated-images/recent/1.jpg",
     style: "Abstract",
     timestamp: "2024-02-15T08:00:00Z",
     settings: {
@@ -55,7 +55,7 @@ const historyItems = [
   {
     id: 4,
     prompt: "A photorealistic portrait of a cyberpunk character",
-    preview: "https://source.unsplash.com/random/400x400?cyberpunk,portrait",
+    preview: "/images/dashboard/generated-images/recent/2.jpg",
     style: "Photorealistic",
     timestamp: "2024-02-14T16:45:00Z",
     settings: {
@@ -69,7 +69,7 @@ const historyItems = [
   {
     id: 5,
     prompt: "Japanese anime style character in a garden",
-    preview: "https://source.unsplash.com/random/400x400?anime,garden",
+    preview: "/images/dashboard/generated-images/recent/3.jpg",
     style: "Anime",
     timestamp: "2024-02-14T15:30:00Z",
     settings: {
@@ -102,7 +102,7 @@ export function ImageHistory({ showHistory, onToggleHistory, onSelectImage, isMo
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.1 }}
-      className="rounded-xl border bg-card p-6 space-y-6"
+      className="rounded-xl p-6 space-y-6"
     >
       <div className="flex items-center justify-between">
         <h3 className="font-semibold flex items-center gap-2">
@@ -389,7 +389,7 @@ export function ImageHistory({ showHistory, onToggleHistory, onSelectImage, isMo
         </AnimatePresence>
       ) : (
         // Desktop version
-        <motion.div className="rounded-xl border bg-card">
+        <motion.div className="rounded-xl bg-card">
           {/* ... existing history content ... */}
         </motion.div>
       )}

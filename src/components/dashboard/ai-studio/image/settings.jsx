@@ -161,7 +161,7 @@ export function ImageSettings({ settings, onSettingsChange, isVisible, isMobile,
         </AnimatePresence>
       ) : (
         // Desktop version
-        <motion.div className="rounded-xl border bg-card">
+        <motion.div className="rounded-xl bg-card">
           {/* ... existing settings content ... */}
         </motion.div>
       )}

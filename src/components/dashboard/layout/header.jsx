@@ -63,7 +63,7 @@ const userMenuItems = [
     title: "Billing",
     description: "Manage your subscription",
     icon: CreditCard,
-    href: "/dashboard/billing",
+    href: "/dashboard/billing/history",
     badge: "Pro"
   }
 ]
@@ -76,7 +76,7 @@ const quickActions = [
     description: "Start a new AI conversation",
     icon: MessageSquare,
     shortcut: "N",
-    action: () => console.log("New chat")
+    href: "/dashboard/chat"
   },
   {
     id: "new-image",
@@ -84,7 +84,7 @@ const quickActions = [
     description: "Create AI-powered images",
     icon: ImageIcon,
     shortcut: "I",
-    action: () => console.log("New image")
+    href: "/dashboard/image"
   },
   {
     id: "new-code",
@@ -92,7 +92,7 @@ const quickActions = [
     description: "Generate code with AI",
     icon: Code,
     shortcut: "C",
-    action: () => console.log("New code")
+    href: "/dashboard/code"
   }
 ]
 
@@ -183,12 +183,9 @@ const MobileQuickActions = ({ onClose }) => (
     </div>
     <div className="p-2 space-y-1">
       {quickActions.map((action) => (
-        <button
+        <Link
           key={action.id}
-          onClick={() => {
-            action.action()
-            onClose()
-          }}
+          href={action.href}
           className={cn(
             "flex items-center gap-3 w-full p-3 rounded-lg",
             "text-sm text-gray-700 dark:text-gray-200",
@@ -203,7 +200,7 @@ const MobileQuickActions = ({ onClose }) => (
             <p className="font-medium">{action.title}</p>
             <p className="text-xs text-gray-500">{action.description}</p>
           </div>
-        </button>
+        </Link>
       ))}
     </div>
   </motion.div>
@@ -317,12 +314,9 @@ const QuickActionsButton = ({ quickActionsRef, showQuickActions, setShowQuickAct
           {/* Quick Actions List */}
           <div className="p-2 space-y-1">
             {quickActions.map((action) => (
-              <button
+              <Link
                 key={action.id}
-                onClick={() => {
-                  action.action()
-                  setShowQuickActions(false)
-                }}
+                href={action.href}
                 className={cn(
                   "flex items-start gap-3 w-full p-3 rounded-lg",
                   "text-sm text-gray-700 dark:text-gray-200",
@@ -348,7 +342,7 @@ const QuickActionsButton = ({ quickActionsRef, showQuickActions, setShowQuickAct
                 )}>
                   ⌥{action.shortcut}
                 </kbd>
-              </button>
+              </Link>
             ))}
           </div>
         </motion.div>
@@ -833,8 +827,8 @@ export function DashboardHeader({ isSidebarOpen, onSidebarToggle, isMobile }) {
 
                     {/* Logout Button */}
                     <div className="p-2 border-t border-gray-200 dark:border-gray-700">
-                      <button
-                        onClick={() => console.log('Logout')}
+                      <Link
+                        href="/login"
                         className={cn(
                           "flex items-center gap-3 w-full px-4 py-2 rounded-lg",
                           "text-sm text-red-600 dark:text-red-400",
@@ -844,7 +838,7 @@ export function DashboardHeader({ isSidebarOpen, onSidebarToggle, isMobile }) {
                       >
                         <LogOut className="h-4 w-4" />
                         <span>Logout</span>
-                      </button>
+                      </Link>
                     </div>
                   </motion.div>
                 )}

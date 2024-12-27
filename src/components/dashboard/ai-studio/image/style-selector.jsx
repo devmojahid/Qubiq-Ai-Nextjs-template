@@ -11,8 +11,8 @@ const styles = [
     description: "All styles",
     icon: Palette,
     examples: [
-      "https://source.unsplash.com/random/400x400?art,all",
-      "https://source.unsplash.com/random/400x400?design,all"
+      "/images/dashboard/generated-images/random/1.jpg",
+      "/images/dashboard/generated-images/random/2.jpg"
     ]
   },
   { 
@@ -21,8 +21,8 @@ const styles = [
     description: "Photo-realistic images",
     icon: Camera,
     examples: [
-      "https://source.unsplash.com/random/400x400?photo,realistic",
-      "https://source.unsplash.com/random/400x400?photography"
+      "/images/dashboard/generated-images/random/3.jpg",
+      "/images/dashboard/generated-images/random/4.jpg"
     ]
   },
   { 
@@ -31,8 +31,8 @@ const styles = [
     description: "Creative artistic styles",
     icon: Brush,
     examples: [
-      "https://source.unsplash.com/random/400x400?art,painting",
-      "https://source.unsplash.com/random/400x400?artwork"
+      "/images/dashboard/generated-images/random/5.jpg",
+      "/images/dashboard/generated-images/random/6.jpg"
     ]
   },
   { 
@@ -41,8 +41,8 @@ const styles = [
     description: "Abstract art styles",
     icon: Shapes,
     examples: [
-      "https://source.unsplash.com/random/400x400?abstract,art",
-      "https://source.unsplash.com/random/400x400?modern,abstract"
+      "/images/dashboard/generated-images/random/7.jpg",
+      "/images/dashboard/generated-images/random/8.jpg"
     ]
   },
   { 
@@ -51,8 +51,8 @@ const styles = [
     description: "3D rendered images",
     icon: Boxes,
     examples: [
-      "https://source.unsplash.com/random/400x400?3d,render",
-      "https://source.unsplash.com/random/400x400?3d,model"
+      "/images/dashboard/generated-images/random/9.jpg",
+      "/images/dashboard/generated-images/random/10.jpg"
     ]
   }
 ]

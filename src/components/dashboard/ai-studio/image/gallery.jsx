@@ -194,7 +194,7 @@ export function ImageGallery({
           </div>
 
           {/* Image Details */}
-          <div className="rounded-xl border bg-card p-4 space-y-4">
+          <div className="rounded-xl bg-card p-4 space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label className="text-sm font-medium">Prompt</label>

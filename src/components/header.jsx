@@ -173,15 +173,15 @@ export function Header() {
             <div className="hidden lg:flex items-center">
               <motion.div className="flex items-center gap-1" layout>
                 {navigation.map((item) => (
-                  <motion.div
+                  <motion.div 
                     key={item.href}
                     onMouseEnter={() => handleMenuHover(item.category)}
                     onMouseLeave={handleMouseLeave}
                     className="relative px-1"
                     layout
                   >
-                    <button
-                      onClick={() => handleNavItemClick(item)}
+                    <Link
+                      href={item.href}
                       className={`group relative flex items-center gap-2 px-3.5 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
                         hoveredItem === item.category
                           ? "text-foreground"
@@ -207,7 +207,7 @@ export function Header() {
                           transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
                         />
                       )}
-                    </button>
+                    </Link>
                   </motion.div>
                 ))}
               </motion.div>

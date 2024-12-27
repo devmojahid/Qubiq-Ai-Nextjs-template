@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
+import Link from "next/link"
 import { Sparkles, ArrowRight, Zap, History, Settings, Plus } from "lucide-react"
 
 export function DashboardWelcome() {
@@ -36,14 +37,14 @@ export function DashboardWelcome() {
             <Zap className="h-4 w-4" />
             Quick Gen
           </button>
-          <button className="flex items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium hover:bg-secondary/80 transition-colors">
+          <Link href="/dashboard/billing/history" className="flex items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium hover:bg-secondary/80 transition-colors">
             <History className="h-4 w-4" />
             History
-          </button>
-          <button className="flex items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium hover:bg-secondary/80 transition-colors">
+          </Link>
+          <Link href="/dashboard/settings" className="flex items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium hover:bg-secondary/80 transition-colors">
             <Settings className="h-4 w-4" />
             Settings
-          </button>
+          </Link>
         </div>
       </div>
 

@@ -177,7 +177,7 @@ export default function SpeechToTextPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sticky top-0 z-50 bg-background/95 backdrop-blur-sm pb-2 sm:pb-0 border-b"
+          className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sticky top-0 z-50 bg-background/95 backdrop-blur-sm pb-2 sm:pb-0"
         >
           <div className="flex-1 min-w-0 px-2">
             <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold tracking-tight truncate">

@@ -18,9 +18,9 @@ const sampleHistory = [
     title: "E-commerce Landing Page",
     prompt: "Create a modern e-commerce landing page with product showcase...",
     preview: {
-      desktop: "/previews/ecommerce-desktop.png",
-      tablet: "/previews/ecommerce-tablet.png",
-      mobile: "/previews/ecommerce-mobile.png"
+      desktop: "/images/dashboard/ecommerce-desktop.jpg",
+      tablet: "/images/dashboard/ecommerce-tablet.jpg",
+      mobile: "/images/dashboard/ecommerce-mobile.jpg"
     },
     framework: "Next.js",
     style: "Modern",
@@ -34,9 +34,9 @@ const sampleHistory = [
     title: "Portfolio Website",
     prompt: "Generate a creative portfolio website with project gallery...",
     preview: {
-      desktop: "/previews/portfolio-desktop.png",
-      tablet: "/previews/portfolio-tablet.png",
-      mobile: "/previews/portfolio-mobile.png"
+      desktop: "/images/dashboard/portfolio-desktop.jpg",
+      tablet: "/images/dashboard/portfolio-tablet.jpg",
+      mobile: "/images/dashboard/portfolio-mobile.jpg"
     },
     framework: "React",
     style: "Minimal",
