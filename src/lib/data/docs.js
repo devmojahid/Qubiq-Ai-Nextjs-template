@@ -104,10 +104,7 @@ export const documentationData = {
             type: 'bearer',
             token: 'your-jwt-token'
           });
-          
-          console.log('Authentication successful:', response);
         } catch (error) {
-          console.error('Authentication failed:', error);
         }
         \`\`\`
       `,
@@ -176,9 +173,7 @@ export const documentationData = {
             token: 'your-jwt-token'
           });
           
-          console.log('Authentication successful:', response);
         } catch (error) {
-          console.error('Authentication failed:', error);
         }
         \`\`\`
       `,
@@ -237,9 +232,7 @@ export const documentationData = {
             token: 'your-jwt-token'
           });
           
-          console.log('Authentication successful:', response);
         } catch (error) {
-          console.error('Authentication failed:', error);
         }
         \`\`\`
       `,

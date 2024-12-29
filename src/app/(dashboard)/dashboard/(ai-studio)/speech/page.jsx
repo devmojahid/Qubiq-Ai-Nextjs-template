@@ -128,7 +128,6 @@ export default function SpeechToTextPage() {
       }, 1000)
 
     } catch (error) {
-      console.error('Failed to start recording:', error)
       alert('Could not access microphone. Please check permissions.')
     }
   }
@@ -163,7 +162,6 @@ export default function SpeechToTextPage() {
       setTranscribedText(data.text)
 
     } catch (error) {
-      console.error('Failed to process audio:', error)
       alert('Failed to process audio. Please try again.')
     } finally {
       setIsProcessing(false)

@@ -96,7 +96,6 @@ export default function AudioGenerationPage() {
         setIsGenerating(false);
       }, 5000);
     } catch (error) {
-      console.error('Generation error:', error);
       setIsGenerating(false);
     }
   };

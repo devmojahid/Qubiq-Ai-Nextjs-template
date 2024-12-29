@@ -69,14 +69,6 @@ export function VideoPreview({
     } catch (error) {
       handleVideoError(error)
       setIsPlaying(false)
-      
-      if (error.name === "NotAllowedError") {
-        console.log("Autoplay was prevented. Please interact with the video player first.")
-      } else if (error.name === "NotSupportedError") {
-        console.log("This video format is not supported by your browser.")
-      } else {
-        console.log("An error occurred while playing the video:", error.message)
-      }
     }
   }
 
@@ -154,7 +146,6 @@ export function VideoPreview({
         alert("Video link copied to clipboard!")
       }
     } catch (error) {
-      console.error("Error sharing video:", error)
       alert("Failed to share video. Please try again.")
     }
   }
@@ -194,7 +185,6 @@ export function VideoPreview({
       window.URL.revokeObjectURL(url)
       document.body.removeChild(a)
     } catch (error) {
-      console.error("Error downloading video:", error)
       alert("Failed to download video. Please try again.")
     }
   }
@@ -281,7 +271,6 @@ export function VideoPreview({
   }
 
   const handleVideoError = (error) => {
-    console.error("Video error:", error)
     
     let errorMessage = "An error occurred while playing the video."
     
@@ -303,8 +292,6 @@ export function VideoPreview({
           errorMessage = "Unknown error occurred."
       }
     }
-
-    console.log("Video Error Message:", errorMessage)
   }
 
   const checkVideoSupport = (videoUrl) => {
@@ -373,7 +360,6 @@ export function VideoPreview({
         }, 500)
       }, 5000)
     } catch (error) {
-      console.error("Generation error:", error)
       setIsGenerating(false)
       clearInterval(progressInterval)
     }
@@ -525,12 +511,6 @@ export function VideoPreview({
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
                     onError={handleVideoError}
-                    onLoadStart={() => {
-                      console.log("Video loading started")
-                    }}
-                    onLoadedData={() => {
-                      console.log("Video loaded successfully")
-                    }}
                     playsInline
                     preload="metadata"
                     controlsList="nodownload"

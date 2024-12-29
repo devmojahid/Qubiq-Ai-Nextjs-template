@@ -22,7 +22,6 @@ const getAudioUrl = (blob) => {
     });
     return URL.createObjectURL(audioBlob);
   } catch (error) {
-    console.error('Error creating audio URL:', error);
     return null;
   }
 };
@@ -44,7 +43,6 @@ const createAudioWithFallback = async (blob) => {
         url: URL.createObjectURL(converted)
       }
     } catch (error) {
-      console.warn(`Failed to convert to ${format.type}:`, error)
       return null
     }
   }))
@@ -236,7 +234,7 @@ export function TextToSpeechPreview({
           analyserRef.current.connect(audioContextRef.current.destination);
         }
       } catch (error) {
-        console.error('Audio initialization failed:', error);
+        //
       }
     };
 
@@ -296,7 +294,6 @@ export function TextToSpeechPreview({
             setIsPlaying(true)
           } catch (error) {
             if (retries > 0) {
-              console.warn(`Play attempt failed, retrying... (${retries} attempts left)`)
               await new Promise(resolve => setTimeout(resolve, 100))
               return playAttempt(retries - 1)
             }
@@ -307,7 +304,6 @@ export function TextToSpeechPreview({
         await playAttempt()
       }
     } catch (error) {
-      console.error('Playback error:', error)
       setErrorMessage('Failed to play audio. Please try again.')
     }
   }
@@ -372,7 +368,6 @@ export function TextToSpeechPreview({
         URL.revokeObjectURL(url);
       }, 100);
     } catch (error) {
-      console.error('Download failed:', error);
       setErrorMessage('Failed to download audio. Please try again.');
     }
   };
@@ -409,7 +404,6 @@ export function TextToSpeechPreview({
         alert('Audio URL copied to clipboard!');
       }
     } catch (error) {
-      console.error('Share failed:', error);
       setErrorMessage(
         error.name === 'AbortError' 
           ? 'Share cancelled' 

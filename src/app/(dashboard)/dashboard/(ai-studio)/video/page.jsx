@@ -79,7 +79,6 @@ export default function VideoGenerationPage() {
         setIsGenerating(false)
       }, 5000)
     } catch (error) {
-      console.error('Generation error:', error)
       setIsGenerating(false)
     }
   }

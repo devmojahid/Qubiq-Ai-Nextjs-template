@@ -111,7 +111,6 @@ export default function TextToSpeechPage() {
       // addToHistory(mockAudio)
 
     } catch (error) {
-      console.error('Failed to generate speech:', error)
       // You can add toast notification here
     } finally {
       setIsGenerating(false)
@@ -144,7 +143,7 @@ export default function TextToSpeechPage() {
         window.URL.revokeObjectURL(url)
         document.body.removeChild(a)
       } catch (error) {
-        console.error('Download failed:', error)
+        //
       }
     }
   }

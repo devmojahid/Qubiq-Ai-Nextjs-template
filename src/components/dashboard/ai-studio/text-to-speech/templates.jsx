@@ -149,7 +149,6 @@ const loadAudioWithFallback = async (template) => {
       await canPlay
       return audio
     } catch (error) {
-      console.warn(`Failed to load ${format.type}:`, error)
       continue // Try next format
     }
   }
@@ -191,7 +190,6 @@ export function TextToSpeechTemplates({
       }
 
       audio.onerror = (error) => {
-        console.error('Audio playback error:', error)
         setCurrentPreview(null)
         setIsPlaying(false)
         // Show error message to user
@@ -202,7 +200,6 @@ export function TextToSpeechTemplates({
       setCurrentPreview(template.id)
       setIsPlaying(true)
     } catch (error) {
-      console.error('Template preview failed:', error)
       // Show error message to user
     } finally {
       setIsLoading(false)

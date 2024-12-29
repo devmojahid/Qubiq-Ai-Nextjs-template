@@ -156,7 +156,6 @@ const handleSearch = (query) => {
 
   // Update search results state
   setSearchResults(searchResults)
-  console.log('Search Results:', searchResults)
 }
 
 // Enhanced Quick Actions for Mobile
@@ -458,8 +457,6 @@ export function DashboardHeader({ isSidebarOpen, onSidebarToggle, isMobile }) {
   // Add this function near the top with other state
   const handleHeaderSearch = (query) => {
     setIsSearchOpen(true)
-    // You can implement your search logic here
-    console.log('Searching:', query)
   }
 
   return (

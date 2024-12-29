@@ -180,7 +180,6 @@ export default function WebsiteGenerationPage() {
         setIsGenerating(false);
       }, 2000);
     } catch (error) {
-      console.error('Generation error:', error);
       setIsGenerating(false);
       setPathError(true);
     }
@@ -202,13 +201,6 @@ export default function WebsiteGenerationPage() {
   // Add safe path check for navigation
   const handleHistorySelect = (website) => {
     try {
-      // Ensure website object exists
-      if (!website || typeof website !== 'object') {
-        console.warn('Invalid website data');
-        return;
-      }
-
-      // Safely update state
       if (website.prompt) setPrompt(website.prompt);
       if (website.settings) setSettings(prev => ({ ...prev, ...website.settings }));
       setSelectedWebsite(website);
@@ -216,7 +208,7 @@ export default function WebsiteGenerationPage() {
       // Close history modal on mobile
       if (isMobileView) setShowHistory(false);
     } catch (error) {
-      console.error('Error selecting website:', error);
+      //
     }
   };
 
@@ -288,7 +280,7 @@ export default function WebsiteGenerationPage() {
                     if (showHistory) setShowHistory(false);
                   }
                 } catch (error) {
-                  console.error('Error toggling settings:', error);
+                  //
                 }
               }}
               className={cn(

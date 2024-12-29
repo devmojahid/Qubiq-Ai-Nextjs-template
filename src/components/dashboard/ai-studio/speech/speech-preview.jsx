@@ -65,7 +65,7 @@ export function SpeechPreview({
       setIsCopied(true)
       setTimeout(() => setIsCopied(false), 2000)
     } catch (error) {
-      console.error('Failed to copy:', error)
+      //
     }
   }
 
@@ -95,7 +95,7 @@ export function SpeechPreview({
         alert('Text copied to clipboard!')
       }
     } catch (error) {
-      console.error('Failed to share:', error)
+      //
     }
   }
 

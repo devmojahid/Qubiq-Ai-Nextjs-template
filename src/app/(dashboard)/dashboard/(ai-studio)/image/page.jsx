@@ -76,7 +76,6 @@ export default function ImageGenerationPage() {
         setIsGenerating(false)
       }, 3000)
     } catch (error) {
-      console.error('Generation error:', error)
       setIsGenerating(false)
     }
   }
