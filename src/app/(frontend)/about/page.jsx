@@ -608,7 +608,7 @@ export default function About() {
               {[
                 "Team Collaboration",
                 "Data Analysis",
-                "AI Research Lab latest",
+                "Data Analysis",
                 "Innovation Hub"
               ].map((image, index) => (
                 <motion.div
