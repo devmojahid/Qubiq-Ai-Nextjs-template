@@ -152,12 +152,6 @@ export default function AudioGenerationPage() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center"
                 >
-                  <ChevronDown 
-                    className={cn(
-                      "h-3 w-3 transition-transform",
-                      showHistory && "rotate-180"
-                    )} 
-                  />
                 </motion.span>
               )}
             </button>
@@ -190,12 +184,6 @@ export default function AudioGenerationPage() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center"
                 >
-                  <ChevronDown 
-                    className={cn(
-                      "h-3 w-3 transition-transform",
-                      showSettings && "rotate-180"
-                    )} 
-                  />
                 </motion.span>
               )}
             </button>

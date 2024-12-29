@@ -43,8 +43,8 @@ export default function TextGenerationPage() {
         setIsMobileView(width < 1024);
         
         if (width >= 1024) {
-          setShowSettings(false);
-          setShowHistory(false);
+          setShowSettings(true);
+          setShowHistory(true);
         }
       }, 100);
     };
@@ -143,9 +143,6 @@ export default function TextGenerationPage() {
                 if (isMobileView) {
                   setShowHistory(!showHistory);
                   if (showSettings) setShowSettings(false);
-                } else {
-                  setShowHistory(prev => !prev);
-                  if (showSettings) setShowSettings(false);
                 }
               }}
               className={cn(
@@ -165,9 +162,6 @@ export default function TextGenerationPage() {
               onClick={() => {
                 if (isMobileView) {
                   setShowSettings(!showSettings);
-                  if (showHistory) setShowHistory(false);
-                } else {
-                  setShowSettings(prev => !prev);
                   if (showHistory) setShowHistory(false);
                 }
               }}

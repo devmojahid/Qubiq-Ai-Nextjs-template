@@ -11,6 +11,7 @@ import {
   ShieldCheck, Loader2
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 const transactions = [
   {
@@ -499,7 +500,7 @@ export default function BillingHistoryPage() {
               )}
             </motion.button>
             
-            <motion.button
+            {/* <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleAddPaymentMethod}
@@ -523,7 +524,20 @@ export default function BillingHistoryPage() {
                   <span className="hidden sm:inline">Add Payment Method</span>
                 </>
               )}
-            </motion.button>
+            </motion.button> */}
+            <Link
+              href="/dashboard/billing/payment-methods/add"
+              className={cn(
+                "inline-flex items-center gap-2",
+                "px-4 py-2 rounded-xl text-sm font-medium",
+                "bg-primary text-primary-foreground",
+                "hover:opacity-90 transition-opacity",
+                "disabled:opacity-50 disabled:cursor-not-allowed"
+              )}
+            >
+              <Plus className="h-4 w-4" />
+              Add Payment Method
+            </Link>
           </div>
         </div>
 
