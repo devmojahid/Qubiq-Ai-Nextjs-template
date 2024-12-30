@@ -607,7 +607,7 @@ export default function About() {
             <div className="grid grid-cols-2 gap-6">
               {[
                 "Team Collaboration",
-                "AI Research Lab latest",
+                "Data Analysis",
                 "Data Analysis",
                 "Innovation Hub"
               ].map((image, index) => (

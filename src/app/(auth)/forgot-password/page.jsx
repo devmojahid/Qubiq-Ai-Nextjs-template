@@ -13,8 +13,7 @@ import {
   TwitterIcon,
   ArrowRight, 
   Loader2,
-  ChromeIcon,
-  User
+  ChromeIcon
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Logo } from "@/components/ui/logo"
@@ -72,7 +71,6 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
-    username: "",
     email: "",
     password: "",
     rememberMe: false
@@ -240,41 +238,6 @@ export default function Login() {
           {/* Enhanced Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
-              {/* Username Field */}
-              <div>
-                <label className="text-sm font-medium">Username</label>
-                <div className="relative mt-1 group">
-                  <input
-                    type="username"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    className={cn(
-                      "w-full rounded-xl border px-4 py-2 pl-10",
-                      "bg-background/50",
-                      "focus:border-primary focus:ring-2 focus:ring-primary/20",
-                      "transition-all duration-200",
-                      "placeholder:text-muted-foreground/50",
-                      errors.username && "border-red-500 focus:border-red-500 focus:ring-red-500/20"
-                    )}
-                    placeholder="Enter your username"
-                  />
-                  <User className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <AnimatePresence>
-                    {errors.username && (
-                      <motion.span
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="text-xs text-red-500 mt-1 block"
-                      >
-                        {errors.username}
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </div>
-
               {/* Email Field */}
               <div>
                 <label className="text-sm font-medium">Email</label>
@@ -309,83 +272,6 @@ export default function Login() {
                   </AnimatePresence>
                 </div>
               </div>
-              
-              {/* Password Field */}
-              <div>
-                <label className="text-sm font-medium">Password</label>
-                <div className="relative mt-1 group">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className={cn(
-                      "w-full rounded-xl border px-4 py-2 pl-10 pr-10",
-                      "bg-background/50",
-                      "focus:border-primary focus:ring-2 focus:ring-primary/20",
-                      "transition-all duration-200",
-                      "placeholder:text-muted-foreground/50",
-                      errors.password && "border-red-500 focus:border-red-500 focus:ring-red-500/20"
-                    )}
-                    placeholder="Enter your password"
-                  />
-                  <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-2.5 text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
-                  <AnimatePresence>
-                    {errors.password && (
-                      <motion.span
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="text-xs text-red-500 mt-1 block"
-                      >
-                        {errors.password}
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </div>
-            </div>
-
-            {/* Enhanced Remember Me & Forgot Password */}
-            <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 group cursor-pointer">
-                <input
-                  type="checkbox"
-                  name="rememberMe"
-                  checked={formData.rememberMe}
-                  onChange={handleChange}
-                  className={cn(
-                    "rounded border-border text-primary",
-                    "focus:ring-2 focus:ring-primary/20",
-                    "transition-all duration-200",
-                    "cursor-pointer"
-                  )}
-                />
-                <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
-                  Remember me
-                </span>
-              </label>
-              <Link
-                href="/forgot-password"
-                className={cn(
-                  "text-sm text-primary hover:text-primary/80",
-                  "transition-colors duration-200",
-                  "hover:underline underline-offset-4"
-                )}
-              >
-                Forgot password?
-              </Link>
             </div>
 
             {/* Enhanced Submit Button */}
@@ -409,7 +295,7 @@ export default function Login() {
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <>
-                  Sign Up
+                  Sign in
                   <ArrowRight className="h-4 w-4" />
                 </>
               )}
@@ -437,16 +323,16 @@ export default function Login() {
 
           {/* Enhanced Sign Up Link */}
           <p className="mt-6 text-center text-sm text-muted-foreground">
-            Already have Account?{" "}
+            Don't have an account?{" "}
             <Link
-              href="/login"
+              href="/register"
               className={cn(
                 "text-primary font-medium",
                 "hover:text-primary/80 transition-colors duration-200",
                 "hover:underline underline-offset-4"
               )}
             >
-              Sign In
+              Sign up
             </Link>
           </p>
         </motion.div>

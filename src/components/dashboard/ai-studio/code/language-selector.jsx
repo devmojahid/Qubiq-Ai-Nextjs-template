@@ -18,22 +18,6 @@ const languages = [
     color: "text-yellow-500"
   },
   {
-    id: "python",
-    name: "Python",
-    description: "Python 3 with modern features",
-    icon: Code2,
-    frameworks: ["Django", "Flask", "FastAPI", "TensorFlow"],
-    color: "text-blue-500"
-  },
-  {
-    id: "typescript",
-    name: "TypeScript",
-    description: "Typed JavaScript",
-    icon: FileCode,
-    frameworks: ["Next.js", "NestJS", "Express", "Deno"],
-    color: "text-blue-600"
-  },
-  {
     id: "html",
     name: "HTML/CSS",
     description: "Modern web markup",

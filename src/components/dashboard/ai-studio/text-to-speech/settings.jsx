@@ -125,7 +125,7 @@ export function TextToSpeechSettings({ settings, onSettingsChange, isVisible }) 
       setCurrentPreview(voice.id)
       setIsPlaying(true)
     } catch (error) {
-      console.error('Voice preview failed:', error)
+      //
     }
   }
 

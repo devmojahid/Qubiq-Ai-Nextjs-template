@@ -64,7 +64,7 @@ export function TextToSpeechInput({
           const data = await response.json()
           onTextChange(text + ' ' + data.text)
         } catch (error) {
-          console.error('Speech to text failed:', error)
+          //
         }
       }
 
@@ -79,7 +79,7 @@ export function TextToSpeechInput({
       }, 1000)
 
     } catch (error) {
-      console.error('Failed to start recording:', error)
+      //
     }
   }
 
@@ -107,7 +107,6 @@ export function TextToSpeechInput({
       
       return audio
     } catch (error) {
-      console.error('Audio preview creation failed:', error)
       throw error
     } finally {
       audioContext.close()
@@ -138,7 +137,6 @@ export function TextToSpeechInput({
       setShowVoiceTest(true)
 
     } catch (error) {
-      console.error('Voice test failed:', error)
       setErrorMessage('Failed to generate audio. Please try again.')
     } finally {
       setIsLoading(false)
@@ -193,7 +191,6 @@ export function TextToSpeechInput({
       */
 
     } catch (error) {
-      console.error('Audio generation failed:', error)
       throw new Error('Failed to generate audio. Please try again.')
     }
   }
@@ -228,7 +225,6 @@ export function TextToSpeechInput({
       });
 
     } catch (error) {
-      console.error('Audio generation failed:', error);
       setErrorMessage('Failed to generate audio. Please try again.');
     } finally {
       setIsGenerating(false);

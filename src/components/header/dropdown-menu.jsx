@@ -19,12 +19,6 @@ const dropdownContent = {
       icon: "⚡"
     },
     { 
-      name: "Blog", 
-      href: "/blog", 
-      description: "Read our latest articles",
-      icon: "📝"
-    },
-    { 
       name: "Privacy Policy", 
       href: "/privacy", 
       description: "Learn more about our privacy policy",

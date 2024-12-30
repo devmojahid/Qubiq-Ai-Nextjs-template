@@ -79,12 +79,10 @@ export default function CodeGenerationPage() {
         setGeneratedCode(`// Generated code example
 function generateAICode() {
   // Your AI-generated code will appear here
-  console.log("Hello from AI!");
 }`)
         setIsGenerating(false)
       }, 2000)
     } catch (error) {
-      console.error('Generation error:', error)
       setIsGenerating(false)
     }
   }

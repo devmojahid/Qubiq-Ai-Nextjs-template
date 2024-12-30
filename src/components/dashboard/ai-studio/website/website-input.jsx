@@ -65,7 +65,7 @@ export function WebsiteInput({
             const content = JSON.parse(e.target.result)
             newAssets.content = content
           } catch (error) {
-            console.error('Error parsing JSON:', error)
+            // Do nothing
           }
         }
         reader.readAsText(file)

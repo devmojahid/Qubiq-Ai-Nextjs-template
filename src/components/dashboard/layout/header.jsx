@@ -156,7 +156,6 @@ const handleSearch = (query) => {
 
   // Update search results state
   setSearchResults(searchResults)
-  console.log('Search Results:', searchResults)
 }
 
 // Enhanced Quick Actions for Mobile
@@ -458,8 +457,6 @@ export function DashboardHeader({ isSidebarOpen, onSidebarToggle, isMobile }) {
   // Add this function near the top with other state
   const handleHeaderSearch = (query) => {
     setIsSearchOpen(true)
-    // You can implement your search logic here
-    console.log('Searching:', query)
   }
 
   return (
@@ -470,7 +467,7 @@ export function DashboardHeader({ isSidebarOpen, onSidebarToggle, isMobile }) {
         "border-b border-gray-200 dark:border-gray-800",
         "transition-all duration-300"
       )}>
-        <div className="flex h-16 items-center gap-2 px-4">
+        <div className="flex h-16 items-center gap-4 px-4">
           {/* Mobile Menu Button */}
           <div className="flex items-center gap-2">
             {isMobile ? (
@@ -541,27 +538,7 @@ export function DashboardHeader({ isSidebarOpen, onSidebarToggle, isMobile }) {
             "flex-1 max-w-2xl mx-auto",
             isMobile && "hidden" // Hide on mobile
           )}>
-            <button
-              onClick={() => setIsSearchOpen(true)}
-              className={cn(
-                "flex w-full items-center gap-2 rounded-xl",
-                "bg-gray-50/50 dark:bg-gray-800/50",
-                "border border-gray-200 dark:border-gray-700",
-                "px-4 py-2.5 text-sm",
-                "text-gray-500 dark:text-gray-400",
-                "hover:bg-gray-100 dark:hover:bg-gray-800",
-                "hover:border-purple-500/30",
-                "transition-all duration-200",
-                "group focus:outline-none focus:ring-2 focus:ring-purple-500/20",
-                "shadow-sm"
-              )}
-            >
-              <Search className="h-4 w-4 group-hover:text-purple-500 transition-colors" />
-              <span className="flex-1 text-left truncate dark:text-gray-300">Search anything...</span>
-              <kbd className="hidden sm:inline-flex h-5 items-center px-2 text-[10px] font-mono rounded bg-gray-100 dark:bg-gray-800 dark:text-gray-400">
-                ⌘K
-              </kbd>
-            </button>
+           
           </div>
 
           {/* Mobile Search Button */}
@@ -571,7 +548,7 @@ export function DashboardHeader({ isSidebarOpen, onSidebarToggle, isMobile }) {
               whileTap={{ scale: 0.95 }}
               onClick={handleMobileSearchClick}
               className={cn(
-                "p-2 rounded-xl",
+                "p-2 rounded-xl hidden",
                 "hover:bg-gray-100 dark:hover:bg-gray-800",
                 "transition-colors"
               )}
