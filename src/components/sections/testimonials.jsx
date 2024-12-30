@@ -254,6 +254,7 @@ function TestimonialCard({ testimonial, index }) {
               className="relative h-10 w-10 sm:h-12 sm:w-12 overflow-hidden rounded-full ring-2 ring-border"
               whileHover={{ scale: 1.05, rotate: [0, -10, 10, 0] }}
             >
+              {console.log(testimonial.image)}
               <Image
                 src={testimonial.image}
                 alt={testimonial.name}

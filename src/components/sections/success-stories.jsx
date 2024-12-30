@@ -185,6 +185,7 @@ function StoryCard({ story, index }) {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
             <div className="relative h-12 w-12 rounded-lg bg-secondary/50 p-2">
+              {console.log(story.logo)}
               <Image
                 src={story.logo}
                 alt={story.company}
